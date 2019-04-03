@@ -1,18 +1,20 @@
 # Predicting House Prices on Kaggle
 
+# Kaggle의 주택 가격 예측하기
+
 The previous chapters introduced a number of basic tools to build deep networks and to perform capacity control using dimensionality, weight decay and dropout. It's time to put our knowledge to good use by participating in a Kaggle competition. [Predicting house prices](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) is the perfect start, since its data is fairly generic and doesn't have much regular structure in the way text of images do.  Note that the dataset is *not* the [Boston housing dataset](https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.names) of Harrison and Rubinfeld, 1978. Instead, it consists of the larger and more fully-featured dataset of house prices in Ames, IA covering 2006-2010. It was collected by [Bart de Cock](http://jse.amstat.org/v19n3/decock.pdf) in 2011. Due to its larger size it presents a slightly more interesting estimation problem.
 
-앞 절들에서 딥 네트워크를 만들고 차원, weight decay 그리고 dropout을 사용해서 용량을 제어하는 다양한 기본적인 도구들을 소개했습니다. 이제 배운 내용을 잘 사용해서 Kaggle 대회에 참여해보겠습니다. [집 가격 예측](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) 문제는 상당히 일반적이고, 텍스트나 이미지 데이터처럼 규칙적인 구조도 없기 때문에 시작하기 좋은 문제입니다. 사용할 데이터는 1978년의 Harrison과 Rubinfeld의 [보스턴 집 데이터 세트](https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.names) 가 아니고, 더 크고 더 많은 feature를 지닌 데이터 세트로 2006년부터 2010년까지의 Ames, IA의 집 가격 데이터입니다. 이 데이터는 2011년에  [Bart de Cock](http://jse.amstat.org/v19n3/decock.pdf) 이 수집한 것입니다. 더 크기 때문에 조금 더 흥미있는 예측 문제를 다루게 됩니다.
+앞 절들에서 딥 네트워크를 만들고 차원, weight decay 그리고 dropout을 사용해서 용량을 제어하는 다양한 기본적인 도구들을 소개했습니다. 이제 배운 내용을 잘 사용해서 Kaggle 대회에 참여해보겠습니다. [집 가격 예측](https://www.kaggle.com/c/house-prices-advanced-regression-techniques) 문제는 상당히 일반적이고, 텍스트나 이미지 데이터처럼 규칙적인 구조도 없기 때문에 시작하기 좋은 문제입니다. 사용할 데이터는 1978년의 Harrison과 Rubinfeld의 [보스턴 집 데이터 세트](https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.names) 가 아니고, 더 크고 더 많은 feature를 지닌 데이터 세트로 2006년부터 2010년까지의 Ames, IA의 집 가격 데이터입니다. 이 데이터는 2011년에  [Bart de Cock](http://jse.amstat.org/v19n3/decock.pdf) 이 수집한 것입니다. 더 크기 때문에 조금 더 흥미 있는 예측 문제를 다루게 됩니다.
 
 In this chapter we will apply what we've learned so far. In particular, we will walk you through details of data preprocessing, model design, hyperparameter selection and tuning. We hope that through a hands-on approach you will be able to observe the effects of capacity control, feature extraction, etc. in practice. Such experience is vital if you want to become an experienced data scientist.
 
-이 절에서는 우리가 배운 것들을 적용해 볼 예정입니다. 특히, 데이터 전처리, 모델 설계, hyperparameter 선택과 튜닝에 대한 자세한 내용들을 살펴봅니다. 직접 수행하면서 용량 제어, feature 추출 등의 영향이 어떻게 되는지 실제로 알아보게되는데, 이 경험은 숙련된 데이터 사이언티스트가 되기 위해서는 반듯이 필요한 것입니다.
+이 절에서는 우리가 배운 것들을 적용해 볼 예정입니다. 특히, 데이터 전처리, 모델 설계, hyperparameter 선택과 튜닝에 대한 자세한 내용들을 살펴봅니다. 직접 수행하면서 용량 제어, feature 추출 등의 영향이 어떻게 되는지 실제로 알아보게 되는데, 이 경험은 숙련된 데이터 사이언티스트가 되기 위해서는 반듯이 필요한 것입니다.
 
 ## Kaggle
 
 [Kaggle](https://www.kaggle.com) is a popular platform for machine learning competitions. It combines data, code and users in a way to allow for both collaboration and competition. For instance, you can see the code that (some) competitors submitted and you can see how well you're doing relative to everyone else. If you want to participate in one of the competitions, you need to register for an account. So it's best to do this now.
 
-[Kaggle](https://www.kaggle.com) 은 머신 러닝 대회로 유명한 플랫폼으로, 데이터와 코드를 사용해서 사용자간에 협력을 하거나 경쟁을 하는 곳입니다. 예를 들어, 경쟁자가 제출한 코드를 볼 수 있고, 다른 참여자들과 대비해서 여러분이 얼마나 잘하고 있는지를 볼 수도 있습니다. 대회중에 하나에 참여하기 위해서는, 계정을 등록해야합니다. 자 그럼 지금 계정을 만들어보겠습니다.
+[Kaggle](https://www.kaggle.com) 은 머신 러닝 대회로 유명한 플랫폼으로, 데이터와 코드를 사용해서 사용자간에 협력을 하거나 경쟁을 하는 곳입니다. 예를 들어, 경쟁자가 제출한 코드를 볼 수 있고, 다른 참여자들과 대비해서 여러분이 얼마나 잘하고 있는지를 볼 수도 있습니다. 대회 중에 하나에 참여하기 위해서는, 계정을 등록해야 합니다. 자 그럼 지금 계정을 만들어보겠습니다.
 
 ![Kaggle website](../img/kaggle.png)
 
@@ -25,6 +27,8 @@ On the House Prices Prediction page you can find the data set (under the data ta
 ![House Price Prediction](../img/house_pricing.png)
 
 ## Accessing and Reading Data Sets
+
+## 데이터 셋을 접근하고 읽기
 
 The competition data is separated into training and test sets. Each record includes the property values of the house and attributes such as street type, year of construction, roof type, basement condition. The data includes multiple datatypes, including integers (year of construction), discrete labels (roof type), floating point numbers, etc.; Some data is missing and is thus labeled 'na'. The price of each house, namely the label, is only included in the training data set (it's a competition after all). The 'Data' tab on the competition tab has links to download the data.
 
@@ -51,7 +55,7 @@ import pandas as pd
 
 For convenience we already downloaded the data and stored it in the `../data` directory. To load the two CSV (Comma Separated Values) files containing training and test data respectively we use Pandas.
 
-편의를 위해서 데이터를 미리 다운로드해서 `../data` 디렉토리 저장해놨습니다. 학습 데이터와 테스트 데이터가 담겨있는 두 개의 CSV(Comma Separated Values) 파일을 각각 Pandas를 이용해서 읽습니다.
+편의를 위해서 데이터를 미리 다운로드해서 `../data` 디렉토리 저장해 놓았습니다. 학습 데이터와 테스트 데이터가 담겨있는 두 개의 CSV(Comma Separated Values) 파일을 각각 Pandas를 이용해서 읽습니다.
 
 ```{.python .input  n=14}
 train_data = pd.read_csv('../data/kaggle_house_pred_train.csv')
@@ -85,15 +89,17 @@ all_features = pd.concat((train_data.iloc[:, 1:-1], test_data.iloc[:, 1:]))
 
 ## Data Preprocessing
 
+## 데이터 전처리하기
+
 As stated above, we have a wide variety of datatypes. Before we feed it into a deep network we need to perform some amount of processing. Let's start with the numerical features. We begin by replacing missing values with the mean. This is a reasonable strategy if features are missing at random. To adjust them to a common scale we rescale them to zero mean and unit variance. This is accomplished as follows:
 
-앞서 설명했듯이, 이 데이터는 다양한 데이터 형을 가지고 있습니다. 데이터를 딥 네트워크에 대입하기 전에, 상당한 처리를 해야합니다. 수치형의 feature부터 시작해봅시다. 누락된 값은 평균값으로 채워넣는 것으로 시작합니다. 이는 feature각 규칙없이 누락된 경우에는 의미있는 전략입니다. 공통적인 스케일로 조정하기 위해서, 평균이 0이고 분산이 1이 되도록 조정을 하겠습니다. 이를 위한 방법은 다음과 같습니다.
+앞서 설명했듯이, 이 데이터는 다양한 데이터 형을 가지고 있습니다. 데이터를 딥 네트워크에 대입하기 전에, 상당한 처리를 해야합니다. 수치형의 feature부터 시작해봅시다. 누락된 값은 평균값으로 채워 넣는 것으로 시작합니다. 이는 feature각 규칙없이 누락된 경우에는 의미있는 전략입니다. 공통적인 스케일로 조정하기 위해서, 평균이 0이고 분산이 1이 되도록 조정을 하겠습니다. 이를 위한 방법은 다음과 같습니다.
 
 $$x \leftarrow \frac{x - \mu}{\sigma}​$$
 
 To check that this transforms $x​$ to data with zero mean and unit variance simply calculate $\mathbf{E}[(x-\mu)/\sigma] = (\mu - \mu)/\sigma = 0​$. To check the variance we use $\mathbf{E}[(x-\mu)^2] = \sigma^2​$ and thus the transformed variable has unit variance. The reason for 'normalizing' the data is that it brings all features to the same order of magnitude. After all, we do not know *a priori* which features are likely to be relevant. Hence it makes sense to treat them equally.
 
-이 변환이  $x$ 를 평균이 0이고 분산이 1인 데이터로 변환하는 방법은 $\mathbf{E}[(x-\mu)/\sigma] = (\mu - \mu)/\sigma = 0$ 간단히 계산해보면 됩니다. 분산을 확인하기 위해서,  $\mathbf{E}[(x-\mu)^2] = \sigma^2$ 을 사용하면, 변환된 분산이 1을 갖는 다는 것을 확인할 수 있습니다. 데이터를 표준화(normalizing)하는 이유는 모든 feature 값을 동일한 크기 정도로 변환해주기 떄문입니다. 결국에는 우리는 어떤 feature가 관련이 있는지에 대한 선험적 정보(*priori*)를 모릅니다. 따라서, 그 값들은 동일하게 다루는 것은 의미가 있습니다.
+이 변환이  $x​$ 를 평균이 0이고 분산이 1인 데이터로 변환하는 방법은 $\mathbf{E}[(x-\mu)/\sigma] = (\mu - \mu)/\sigma = 0​$ 간단히 계산해보면 됩니다. 분산을 확인하기 위해서,  $\mathbf{E}[(x-\mu)^2] = \sigma^2​$ 을 사용하면, 변환된 분산이 1을 갖는 다는 것을 확인할 수 있습니다. 데이터를 표준화(normalizing)하는 이유는 모든 feature 값을 동일한 크기 정도로 변환 해주기 때문입니다. 결국에는 우리는 어떤 feature가 관련이 있는지에 대한 선험적 정보(*priori*)를 모릅니다. 따라서, 그 값들은 동일하게 다루는 것은 의미가 있습니다.
 
 ```{.python .input  n=6}
 numeric_features = all_features.dtypes[all_features.dtypes != 'object'].index
@@ -106,7 +112,7 @@ all_features = all_features.fillna(0)
 
 Next we deal with discrete values. This includes variables such as 'MSZoning'. We replace them by a one-hot encoding in the same manner as how we transformed multiclass classification data into a vector of $0$ and $1$. For instance, 'MSZoning' assumes the values 'RL' and 'RM'. They map into vectors $(1,0)$ and $(0,1)$ respectively. Pandas does this automatically for us.
 
-다음으로는, 불연속된 값(discrete value)들을 다뤄보겠습니다. 이것은  'MSZoning'과 같은 변수들을 포함합니다. 멀티클래스 분류 데이터를 0과 1의 백터로 변환한 것과 같은 방법으로 이 값들을 one-hot-encoding을 이용해서 변환합니다. 예를 들면,  'MSZoning'에 대한 값이 'RL'과 'RM'을 갖을 수 있다고 하면, 이들은 각각 (1,0)과 (0,1) 백터로 매핑하는 것을 의미합니다. Pandas는 이를 자동으로 해주는 기능을 제공합니다.
+다음으로는, 불연속된 값(discrete value)들을 다뤄보겠습니다. 이것은  'MSZoning'과 같은 변수들을 포함합니다. 멀티클래스 분류 데이터를 0과 1의 벡터로 변환한 것과 같은 방법으로 이 값들을 one-hot-encoding을 이용해서 변환합니다. 예를 들면,  'MSZoning'에 대한 값이 'RL'과 'RM'을 갖을 수 있다고 하면, 이들은 각각 (1,0)과 (0,1) 벡터로 매핑하는 것을 의미합니다. Pandas는 이를 자동으로 해주는 기능을 제공합니다.
 
 ```{.python .input  n=7}
 # Dummy_na=True refers to a missing value being a legal eigenvalue, and
@@ -128,9 +134,11 @@ train_labels = nd.array(train_data.SalePrice.values).reshape((-1, 1))
 
 ## Training
 
+## 학습하기
+
 To get started we train a linear model with squared loss. This will obviously not lead to a competition winning submission but it provides a sanity check to see whether there's meaningful information in the data. It also amounts to a minimum baseline of how well we should expect any 'fancy' model to work.
 
-우선 squared loss를 사용해서 선형 모델을 학습시켜보겠습니다. 이 모델은 당연히 이 대회에서 우승을 할 정도로 좋은 모델이 될 수 없지만, 데이터의 의미있는 정보가 있는지를 확인하는 점검하는데 도움을 줍니다. 또한, 이 모델은 더 멋진 모델이 얼마나 좋을 결과를 만들어내야하는지에 대한 최소한의 기준점(baseline)을 주기도 합니다.
+우선 squared loss를 사용해서 선형 모델을 학습시켜보겠습니다. 이 모델은 당연히 이 대회에서 우승을 할 정도로 좋은 모델이 될 수 없지만, 데이터의 의미 있는 정보가 있는지를 확인하는 점검하는데 도움을 줍니다. 또한, 이 모델은 더 멋진 모델이 얼마나 좋을 결과를 만들어내야 하는지에 대한 최소한의 기준점(baseline)을 주기도 합니다.
 
 ```{.python .input  n=13}
 loss = gloss.L2Loss()
@@ -146,7 +154,7 @@ House prices, like shares, are relative. That is, we probably care more about th
 
 주식과 같이 집 가격은 상대적입니다. 즉, 절대 오류 보다는 상대 오류 $\frac{y - \hat{y}}{y}$ 가 더 의미가 있을 것입니다. 예를 들면, 실제 집 가격이 125,000 달러인 Rural Ohio에서 가격을 100,000 달러만큼 틀리게 예측하는 것은 아주 나쁜 예측이 되지만, 평균 집 값이 4백만 달러가 넘는 캘리포니아 Los Altos Hills의 집 가격을 같은 오차로 예산했다면, 이 모델을 충분히 정확한 것으로 간주될 것습니다.
 
-One way to address this problem is to measure the discrepancy in the logarithm of the price estimates. In fact, this is also the error that is being used to measure the quality in this competition. After all, a small value $\delta$ of $\log y - \log \hat{y}$ translates into $e^{-\delta} \leq \frac{\hat{y}}{y} \leq e^\delta$. This leads to the following loss function:
+One way to address this problem is to measure the discrepancy in the logarithm of the price estimates. In fact, this is also the error that is being used to measure the quality in this competition. After all, a small value $\delta​$ of $\log y - \log \hat{y}​$ translates into $e^{-\delta} \leq \frac{\hat{y}}{y} \leq e^\delta​$. This leads to the following loss function:
 
 이런 문제를 해결하는 방법 중에 하나는 예측된 가격에 logarithm를 취한 값의 차이로 측정하는 것입니다. 사실, 이 대회에서 품질을 측정하는 방법으로 사용되는 오류이기도 합니다. 결국,  $\log y - \log \hat{y}$ 의 작은 값 $\delta$ 는  $e^{-\delta} \leq \frac{\hat{y}}{y} \leq e^\delta$ 로 해석되고, 다음과 같은 loss 함수를 정의할 수 있습니다.
 
@@ -190,7 +198,7 @@ def train(net, train_features, train_labels, test_features, test_labels,
 
 The k-fold cross-validation was introduced in the section where we discussed how to deal with [“Model Selection, Underfitting and Overfitting"](underfit-overfit.md). We will put this to good use to select the model design and to adjust the hyperparameters. We first need a function that returns the i-th fold of the data in a k-fold cros-validation procedure. It proceeds by slicing out the i-th segment as validation data and returning the rest as training data. Note - this is not the most efficient way of handling data and we would use something much smarter if the amount of data was considerably larger. But this would obscure the function of the code considerably and we thus omit it.
 
-k-fold cross-validation은  [“Model Selection, Underfitting and Overfitting"](underfit-overfit.md) 어떻게 다뤄야하는지를 설명하는 절에서 소개한 개념입니다. 우리는 이 방법은 모델 디자인을 선택하고, hyperparameter를 조정하는데 사용하겠습니다. 우선, k-fold cross validation 절차에 사용될, i번째 데이터 fold를 반환하는 함수가 필요합니다. 데이터를 다루는 가장 효과적인 구현이 아님을 명시해주세요. 이 후에 우리는 아주 많은 데이터를 더 똑똑하게 다루는 방법을 사용할 예정이지만, 함수의 구현 코드를 간견하게 하기 위해서 지금은 사용하기 않겠습니다.
+k-fold cross-validation은  [“Model Selection, Underfitting and Overfitting"](underfit-overfit.md) 어떻게 다뤄야하는지를 설명하는 절에서 소개한 개념입니다. 우리는 이 방법은 모델 디자인을 선택하고, hyperparameter를 조정하는데 사용하겠습니다. 우선, k-fold cross validation 절차에 사용될, i번째 데이터 fold를 반환하는 함수가 필요합니다. 데이터를 다루는 가장 효과적인 구현이 아님을 명시해주세요. 이 후에 우리는 아주 많은 데이터를 더 똑똑하게 다루는 방법을 사용할 예정이지만, 함수의 구현 코드를 간결하게 하기 위해서 지금은 사용하기 않겠습니다.
 
 ```{.python .input}
 def get_k_fold_data(k, i, X, y):
@@ -236,9 +244,11 @@ def k_fold(k, X_train, y_train, num_epochs,
 
 ## Model Selection
 
+## 모델 선택하기
+
 We pick a rather un-tuned set of hyperparameters and leave it up to the reader to improve the model considerably. Finding a good choice can take quite some time, depending on how many things one wants to optimize over. Within reason the k-fold crossvalidation approach is resilient against multiple testing. However, if we were to try out an unreasonably large number of options it might fail since we might just get lucky on the validation split with a particular set of hyperparameters.
 
-아래 hyperparameter는 튜닝되지 않은 값을 사용했으니, 여러분이 이 값을 변경해서 모델의 성능을 높여보기 바랍니다. 몇개를 조정할 것인지에 따라 좋은 값들을 찾는데 상당히 많은 시간이 걸릴 수도 있습니다. **Within reason the k-fold crossvalidation approach is resilient against multiple testing. However, if we were to try out an unreasonably large number of options it might fail since we might just get lucky on the validation split with a particular set of hyperparameters.**
+아래 hyperparameter는 튜닝되지 않은 값을 사용했으니, 여러분이 이 값을 변경해서 모델의 성능을 높여보기를 바랍니다. 몇개를 조정할 것인지에 따라 좋은 값들을 찾는데 상당히 많은 시간이 걸릴 수도 있습니다. **Within reason the k-fold crossvalidation approach is resilient against multiple testing. However, if we were to try out an unreasonably large number of options it might fail since we might just get lucky on the validation split with a particular set of hyperparameters.**
 
 ```{.python .input  n=16}
 k, num_epochs, lr, weight_decay, batch_size = 5, 100, 5, 0, 64
@@ -250,9 +260,11 @@ print('%d-fold validation: avg train rmse: %f, avg valid rmse: %f'
 
 You will notice that sometimes the number of training errors for a set of hyper-parameters can be very low, while the number of errors for the $K$-fold cross validation may be higher. This is most likely a consequence of overfitting. Therefore, when we reduce the amount of training errors, we need to check whether the amount of errors in the k-fold cross-validation have also been reduced accordingly.
 
-어떤 hyper-parameter 세트들을 사용하면 학습 오류가 장상이 작게 나오나, $K$-fold cross validation 오류는 상당히 크게 나오는 현상을 발견하게 될 것습니다. 이것은 대부분 overfitting의 결과입니다. 따라서, 학습 오류를 줄일 때, $K$-fold cross validation 오류도 함께 감소하고 있는지를 확인하는 것이 필요합니다.
+어떤 hyper-parameter 세트들을 사용하면 학습 오류가 장상이 작게 나오나, $K$-fold cross validation 오류는 상당히 크게 나오는 현상을 발견하게 될 것 입니다. 이것은 대부분 overfitting의 결과입니다. 따라서, 학습 오류를 줄일 때, $K$-fold cross validation 오류도 함께 감소하고 있는지를 확인하는 것이 필요합니다.
 
 ##  Predict and Submit
+
+## 예측하고 제출하기
 
 Now that we know what a good choice of hyperparameters should be, we might as well use all the data to train on it (rather than just $1-1/k$ of the data that is used in the crossvalidation slices). The model that we obtain in this way can then be applied to the test set. Saving the estimates in a CSV file will simplify uploading the results to Kaggle.
 
@@ -276,7 +288,7 @@ def train_and_pred(train_features, test_feature, train_labels, test_data,
 
 Let's invoke the model. A good sanity check is to see whether the predictions on the test set resemble those of the k-fold crossvalication process. If they do, it's time to upload them to Kaggle.
 
-자 모델을 수행하보겠습니다. 잘되고 있는지 확인하는 좋은 방법은 $K$-fold crossvalidation 으로 예측한 것과 테스트 셋에 대한 예측이 비슷하게 나오는지 확인해보는 것입니다. 만약 비슷하게 나온다면, 결과를 Kaggle에 업로드하세요.
+자 모델을 수행해 보겠습니다. 잘되고 있는지 확인하는 좋은 방법은 $K$-fold crossvalidation 으로 예측한 것과 테스트 셋에 대한 예측이 비슷하게 나오는지 확인해보는 것입니다. 만약 비슷하게 나온다면, 결과를 Kaggle에 업로드하세요.
 
 ```{.python .input  n=19}
 train_and_pred(train_features, test_features, train_labels, test_data,
@@ -285,7 +297,7 @@ train_and_pred(train_features, test_features, train_labels, test_data,
 
 A file, `submission.csv` will be generated by the code above (CSV is one of the file formats accepted by Kaggle).  Next, we can submit our predictions on Kaggle and compare them to the actual house price (label) on the testing data set, checking for errors. The steps are quite simple:
 
-위 코드를 수행하면 `submission.csv` 파일이 생성됩니다. (CSV는 Kaggle에서 결과 파일로 받는 형식 중에 하나임) 그 다음, Kaggle에 예측값을 제출해서 테스트 데이터셋에 대한 실제 집 가격과 비교해서 오류를 확인해보는 것입니다. 방법은 아주 간단합니다.
+위 코드를 수행하면 `submission.csv` 파일이 생성됩니다. (CSV는 Kaggle에서 결과 파일로 받는 형식 중에 하나임) 그 다음, Kaggle에 예측 값을 제출해서 테스트 데이터셋에 대한 실제 집 가격과 비교해서 오류를 확인해보는 것입니다. 방법은 아주 간단합니다.
 
 * Log in to the Kaggle website and visit the House Price Prediction Competition page.
 * Click the “Submit Predictions” or “Late Submission” button on the right.
@@ -298,8 +310,9 @@ A file, `submission.csv` will be generated by the code above (CSV is one of the 
 
 ![Submitting data to Kaggle](../img/kaggle_submit2.png)
 
-
 ## Summary
+
+## 요약
 
 * Real data often contains a mix of different datatypes and needs to be preprocessed.
 * Rescaling real-valued data to zero mean and unit variance is a good default. So is replacing missing values with their mean.
@@ -308,12 +321,13 @@ A file, `submission.csv` will be generated by the code above (CSV is one of the 
 * Logarithms are useful for relative loss.
 * 실제 데이터는 종종 다양한 데이터 타입의 값들을 갖고 있기 때문에, 전처리가 꼭 필요합니다.
 * 실수 값을 평균이 0이고 분산이 1로 변환을 기본 선택으로 하는 것은 좋은 방법이고, 누락된 값을 평균 값으로 채워 넣는 것도 그렇습니다.
-* 카테고리 변수를 지표 변수(indicator variable)로 변환해서 이 값들을 백터처럼 다룰 수 있습니다.
+* 카테고리 변수를 지표 변수(indicator variable)로 변환해서 이 값들을 벡터처럼 다룰 수 있습니다.
 * 모델을 선택하고 hyper-parameter를 선택하기 위해서 k-fold cross validation을 사용할 수 있습니다.
 * Logarithm은 상대적인 loss를 구하는데 유용합니다.
 
-
 ## Problems
+
+## 문제
 
 1. Submit your predictions for this tutorial to Kaggle. How good are your predictions?
 1. Can you improve your model by minimizing the log-price directly? What happens if you try to predict the log price rather than the price?

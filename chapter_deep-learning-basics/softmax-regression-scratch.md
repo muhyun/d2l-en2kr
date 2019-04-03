@@ -1,5 +1,7 @@
 # Implementation of Softmax Regression from Scratch
 
+# Softmax 회귀를 처음부터 구현하기
+
 Just like we learned how to implement linear regression from scratch, it is very instructive to do the same for softmax regression. After that we'll repeat the same procedure using Gluon for comparison. We begin with our regular import ritual.
 
 선형 회귀를 직접 구현해본 것처럼, softmax regression도 직접 구현해보는 것이 도움이 될 것입니다. 이 후에, 같은 내용을 Gluon을 사용해서 구현하면서 비교를 해보겠습니다. 필요한 패키지와 모듈을 import 하는 것으로 시작합니다.
@@ -24,9 +26,11 @@ train_iter, test_iter = d2l.load_data_fashion_mnist(batch_size)
 
 ## Initialize Model Parameters
 
-Just as in linear regression, we use vectors to represent examples. Since each example is an image with $28 \times 28$ pixels we can store it as a $784$ dimensional vector. Moreover, since we have 10 categories, the single layer network has an output dimension of 10. Consequently, the weight and bias parameters of the softmax regression are matrices of size $784 \times 10$ and $1 \times 10$ respectively. We initialize $W$ with Gaussian noise.
+## 모델 파라메터 초기화하기
 
-선형 회귀처럼 샘플들을 백터로 표현합니다. 각 예제가 $28 \times 28$ 픽셀의 이미지기 때문에 784 차원의 백터에 저장합니다. 그리고 10개의 카테고리가 있으니 단일 래이어를 갖는 네트워크의 output 차원은 10으로 정의합니다. 이렇게 하면, softmax regression의 weight와 bias 파라매터들은 각각 크기가  $784 \times 10$,  $1 \times 10$ 인 행렬이 됩니다.  $W$ 를 가우시안 노이즈를 이용해서 초기화합니다.
+Just as in linear regression, we use vectors to represent examples. Since each example is an image with $28 \times 28​$ pixels we can store it as a $784​$ dimensional vector. Moreover, since we have 10 categories, the single layer network has an output dimension of 10. Consequently, the weight and bias parameters of the softmax regression are matrices of size $784 \times 10​$ and $1 \times 10​$ respectively. We initialize $W​$ with Gaussian noise.
+
+선형 회귀처럼 샘플들을 벡터로 표현합니다. 각 예제가 $28 \times 28$ 픽셀의 이미지이기 때문에 784 차원의 벡터에 저장합니다. 그리고 10개의 카테고리가 있으니 단일 레이어를 갖는 네트워크의 output 차원은 10으로 정의합니다. 이렇게 하면, softmax regression의 weight와 bias 파라매터들은 각각 크기가  $784 \times 10$,  $1 \times 10$ 인 행렬이 됩니다.  $W$ 를 가우시안 노이즈를 이용해서 초기화합니다.
 
 ```{.python .input  n=9}
 num_inputs = 784
@@ -58,7 +62,7 @@ X.sum(axis=0, keepdims=True), X.sum(axis=1, keepdims=True)
 
 We can now define the softmax function. For that we first exponentiate each term using `exp` and then sum each row to get the normalization constant. Last we divide each row by its normalization constant and return the result. Before looking at the code, let's look at this in equation form:
 
-자 이제 우리는 softmax 함수를 정의할 준비가 되었습니다. 우선 각 항에 `exp` 를 적용해서 지수값을 구하고, 정규화 상수(normalization constant)를 구하기 위해서 각 행의 값들을 모두 더합니다. 각 행을 정규화 상수(normalization contatnt)로 나누고 그 결과를 리턴합니다. 코드를 보기전에 수식을 먼저 보겠습니다.
+자 이제 우리는 softmax 함수를 정의할 준비가 되었습니다. 우선 각 항에 `exp` 를 적용해서 지수값을 구하고, 정규화 상수(normalization constant)를 구하기 위해서 각 행의 값들을 모두 더합니다. 각 행을 정규화 상수(normalization contatnt)로 나누고 그 결과를 리턴합니다. 코드를 보기 전에 수식을 먼저 보겠습니다.
 $$
 \mathrm{softmax}(\mathbf{X})_{ij} = \frac{\exp(X_{ij})}{\sum_k \exp(X_{ik})}
 $$
@@ -86,9 +90,11 @@ X_prob, X_prob.sum(axis=1)
 
 ## The Model
 
+## 모델
+
 With the softmax operation, we can define the softmax regression model discussed in the last section. We change each original image into a vector with length `num inputs` through the `reshape` function.
 
-Softmax 연산을 이용해서 softmax regresssion 모델을 정의하겠습니다. `reshape` 함수를 이용해서 원본 이미지를 길이가 `num inputs` 인 백터로 변환합니다.
+Softmax 연산을 이용해서 softmax regresssion 모델을 정의하겠습니다. `reshape` 함수를 이용해서 원본 이미지를 길이가 `num inputs` 인 벡터로 변환합니다.
 
 ```{.python .input  n=14}
 def net(X):
@@ -96,6 +102,8 @@ def net(X):
 ```
 
 ## The Loss Function
+
+## Loss 함수
 
 In the [last section](softmax-regression.md), we introduced the cross-entropy loss function used by softmax regression. It may be the most common loss function you’ll find in all of deep learning. That’s because at the moment, classification problems tend to be far more abundant than regression problems.
 
@@ -121,6 +129,8 @@ def cross_entropy(y_hat, y):
 ```
 
 ## Classification Accuracy
+
+## 분류 정확도
 
 Given a class of predicted probability distributions `y_hat`, we use the one with the highest predicted probability as the output category. If it is consistent with the actual category `y`, then this prediction is correct.  The classification accuracy is the ratio between the number of correct predictions and the total number of predictions made.
 
@@ -169,6 +179,8 @@ evaluate_accuracy(test_iter, net)
 
 ## Model Training
 
+## 모델 학습
+
 The implementation for training softmax regression is very similar to the implementation of linear regression discussed earlier. We still use the mini-batch stochastic gradient descent to optimize the loss function of the model. When training the model, the number of epochs, `num_epochs`, and learning rate `lr` are both adjustable hyper-parameters. By changing their values, we may be able to increase the classification accuracy of the model.
 
 softmax regression 학습은 선형 회귀 학습과 아주 유사합니다. 모델의 loss 함수를 최적화하기 위해서 미니 배치 stochastic gradient descent를 이용합니다. 모델 학습에서 `num_epochs` epoch 횟수와 `lr` learning rate는 모두 바꿀 수 있는 hyper-parameter 입니다. 이 값을 바꾸면서, 모델의 분류 정확도를 높일 수 있습니다.
@@ -205,6 +217,8 @@ train_ch3(net, train_iter, test_iter, cross_entropy, num_epochs,
 
 ## Prediction
 
+## 예측
+
 Now that training is complete, we can show how to classify the image. Given a series of images, we will compare their actual labels (first line of text output) and the model predictions (second line of text output).
 
 학습이 완료되었으면, 모델을 이용해서 이미지를 분류 해보겠습니다. 이미지들이 주어졌을 때, 실제 label들 (텍스트 결과의 첫번째 줄)과 모델 예측 (텍스트 결과의 두번째 줄)를 비교 해보세요.
@@ -223,11 +237,15 @@ d2l.show_fashion_mnist(X[0:9], titles[0:9])
 
 ## Summary
 
+## 요약
+
 We can use softmax regression to carry out multi-category classification. Training is very similar to that of linear regression: retrieve and read data, define models and loss functions, then train models using optimization algorithms. In fact, most common deep learning models have a similar training procedure.
 
 softmax regression을 이용해서 다중 카테고리 분류를 할 수 있습니다. 학습은 선형 회귀와 비슷하게 수행됩니다: 데이터를 획득하고, 읽고, 모델과 loss 함수를 정의한 후, 최적화 알고리즘을 이용해서 모델을 학습시킵니다. 사실은 거의 모든 딥러닝 모델의 학습 절차는 이와 비슷합니다.
 
 ## Problems
+
+## 문제
 
 1. In this section, we directly implemented the softmax function based on the mathematical definition of the softmax operation. What problems might this cause (hint - try to calculate the size of $\exp(50)$)?
 1. The function `cross_entropy` in this section is implemented according to the definition of the cross-entropy loss function.  What could be the problem with this implementation (hint - consider the domain of the logarithm)?
@@ -235,10 +253,10 @@ softmax regression을 이용해서 다중 카테고리 분류를 할 수 있습�
 1. Is it always a good idea to return the most likely label. E.g. would you do this for medical diagnosis?
 1. Assume that we want to use softmax regression to predict the next word based on some features. What are some problems that might arise from a large vocabulary?
 1. 이 절에서 softmax 연산의 수학적인 정의에 따라 softmax 함수를 직접 정의해봤습니다. 이 경우 어떤 문제가 발생할 수 있을까요? (힌트 - exp(50)의 크기를 계산해보세요)
-1. 이 절의 `cross_entropy` 함수 cross-entropy loss 함수의 정의를 따라서 구현되었습니다. 이 구현에 어떤 문제가 있을까요? (힌트 - logarithm의 도메일을 고려해보세요)
+1. 이 절의 `cross_entropy` 함수 cross-entropy loss 함수의 정의를 따라서 구현되었습니다. 이 구현에 어떤 문제가 있을까요? (힌트 - logarithm의 도메인을 고려해보세요)
 1. 위 두가지 문제를 어떻게 해결할 수 있는지 생각해보세요
 1. 가장 유사한 label을 리턴하는 것이 항상 좋은 아이디어일까요? 예를 들면, 의료 진단에서 그렇게 하겠나요?
-1. 어떤 feature들을 기반으로 다음 단어를 예측하기 위해서 softmax regression을 사용하기를 원한다고 가정하겠습니다. 단어수가 많은 경우 어떤 문제가 있을까요?
+1. 어떤 feature들을 기반으로 다음 단어를 예측하기 위해서 softmax regression을 사용하기를 원한다고 가정하겠습니다. 단어 수가 많은 경우 어떤 문제가 있을까요?
 
 ## Scan the QR Code to [Discuss](https://discuss.mxnet.io/t/2336)
 

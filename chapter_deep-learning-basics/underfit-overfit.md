@@ -1,12 +1,14 @@
 # Model Selection, Underfitting and Overfitting
 
+# 모델 선택, Underfitting, Overfitting
+
 In machine learning, our goal is to discover general patterns. For example, we might want to learn an association between genetic markers and the development of dementia in adulthood. Our hope would be to uncover a pattern that could be applied successfully to assess risk for the entire population.
 
 머신러닝에서 우리의 목표는 일반적인 패턴을 발견하는 것입니다. 예를 들면, 유전자 표지와 성인기의 치매 발병간의 관련성을 배우기를 원할 수 있습니다. 여기서 우리의 원하는 것은 전인류에 대한 위험을 평가하기 위해서 성공적으로 적용될 수 있는 패턴을 발견하는 것입니다.
 
 However, when we train models, we don’t have access to the entire population (or current or potential humans). Instead, we can access only a small, finite sample. Even in a large hospital system, we might get hundreds of thousands of medical records. Given such a finite sample size, it’s possible to uncover spurious associations that don’t hold up for unseen data.
 
-하지만, 우리가 모델을 학습시킬 때,  전체 인구에 대한 정보를 사용하는 것은 불가능합니다. 대신, 우리는 작은 유한한 샘플만을 사용할 수 있습니다. 대형 병원 시스템에서도 조차도 수십만건의 의료 기록 정도를 얻을 수도 있습니다. **이렇게 한정된 표본의 크기를 감안하면, 보이지 않은 데이터에 존재하는 않는 가짜 연관성을 발견할 수 있습니다.**
+하지만, 우리가 모델을 학습시킬 때,  전체 인구에 대한 정보를 사용하는 것은 불가능합니다. 대신, 우리는 작은 유한한 샘플만을 사용할 수 있습니다. 대형 병원 시스템에서도 조차도 수십만건의 의료 기록 정도를 얻을 수도 있습니다. 이렇게 한정된 표본의 크기를 감안하면, 보이지 않은 데이터에 존재하는 않는 가짜 연관성을 발견할 수 있습니다.
 
 Let’s consider an extreme pathological case. Imagine that you want to learn to predict which people will repay their loans. A lender hires you as a data scientist to investigate the case and gives you complete files on 100 applicants, of which 5 defaulted on their loans within 3 years. The files might include hundreds of features including income, occupation, credit score, length of employment etcetera. Imagine that they additionally give you video footage of their interview with a lending agent. That might seem like a lot of data!
 
@@ -25,8 +27,9 @@ More to the point, in the previous sections we observed this effect on the Fashi
 
 모델이 실제 분포보다 학습 샘플들 분포에 더 근접하게 학습되는 현상을 overfitting 이라고 하며, overfitting 을 피하는 방법을 정규화(regularization)라고 합니다. 더 정확하게는 이전 절의 Fashion-MNIST 데이서셋에서 이 현상이 나왔었습니다. 실험 중에 모델의 구조나 hyperparameter들을 바꾸면, 어떤 조합에서는 모델이 학습 데이터와 비교해서 테스팅 데이터셋을 사용했을 때 정확하지 않게 나오는 것을 현상을 찾아냈을 수 있습니다.
 
-
 ## Training Error and Generalization Error
+
+## 학습 오류와 일반화 오류
 
 Before we can explain this phenomenon, we need to differentiate between training and a generalization error.  In layman's terms, training error refers to the error exhibited by the model during its use of the training data set and generalization error refers to any expected error when applying the model to an imaginary stream of additional data drawn from the underlying data distribution. The latter is often estimated by applying the model to the test set. In the previously discussed loss functions, for example, the squared loss function used for linear regression or the cross-entropy loss function used for softmax regression, can be used to calculate training and generalization error rates.
 
@@ -34,17 +37,19 @@ Before we can explain this phenomenon, we need to differentiate between training
 
 The following three thought experiments will help illustrate this situation better. Consider a college student trying to prepare for his final exam. A diligent student will strive to practice well and test his abilities using exams from previous years. Nonetheless, doing well on past exams is no guarantee that he will excel when it matters. For instance, the student might try to prepare by rote learning the answers to the exam questions. This requires the student to memorize many things. He might even remember the answers for past exams perfectly. Another student might prepare by trying to understand the reasons for giving certain answers. In most cases, the latter student will do much better.
 
-다음 세가지 사고 실험이 이 상황을 더 잘 설명하는데 도움이 될 것입니다. 마지막 시험을 준비하는 대학생을 생각해봅시다. 근면한 학생은 준비를 잘 하고, 이전 년도의 시험 문제를 통해서 본인의 능력을 테스트를 하는 등의 노력할 것입니다. 하지만, 이전 시험을 잘 푸는 것이 꼭 그 학생이 실제 시험을 잘 본다는 것을 보장하지는 못합니다. 예를 들면, 그 학생은 시험 문제의 답을 기계적으로 학습하면서 준비하려고 노력할지도 모릅니다. 이렇게 하면 그 학생은 많은 것을 외워야합니다. 이렇게 해서 그 학생은 이전 시험의 답을 완벽하게 암기할 수도 있습니다. 다른 학생은 문제에 대한 특정 답이 나오게되는 이유를 이해하려고 노력하면서 준비했습니다. 대부분의 경우에는, 후자의 경우에 실제 시험에서 더 좋은 성적을 냅니다.
+다음 세가지 사고 실험이 이 상황을 더 잘 설명하는데 도움이 될 것입니다. 마지막 시험을 준비하는 대학생을 생각해봅시다. 근면한 학생은 준비를 잘 하고, 이전 년도의 시험 문제를 통해서 본인의 능력을 테스트를 하는 등의 노력할 것입니다. 하지만, 이전 시험을 잘 푸는 것이 꼭 그 학생이 실제 시험을 잘 본다는 것을 보장하지는 못합니다. 예를 들면, 그 학생은 시험 문제의 답을 기계적으로 학습하면서 준비하려고 노력 할지도 모릅니다. 이렇게 하면 그 학생은 많은 것을 외워야 합니다. 이렇게 해서 그 학생은 이전 시험의 답을 완벽하게 암기할 수도 있습니다. 다른 학생은 문제에 대한 특정 답이 나오게되는 이유를 이해하려고 노력하면서 준비했습니다. 대부분의 경우에는, 후자의 경우에 실제 시험에서 더 좋은 성적을 냅니다.
 
 Likewise, we would expect that a model that simply performs table lookup to answer questions. If the inputs are discrete, this might very well work after seeing *many* examples. Nonetheless, such a model is unlikely to work well in practice, as data is often real-valued and more scarce than we would like. Furthermore, we only have a finite amount of RAM to store our model in.
 
-마찬가지로, 질문에 대한 답을 테이블에서 조회하는 역할을 수행하는 모델을 생각하보겠습니다. 입력이 이산적(discrete)인 경우, 많은 샘플을 보는 것을 통해서 잘 동작할 수 있습니다. 하지만, 이 모델은 데이터가 실수값이거나 우리가 원하는 것보다 더 부족한 경우 실제 상황에서는 잘 동잘하지 않을 가능성이 높습니다. 더군다나, 우리는 모델을 저장할 수 있는 한정된 양의 메모리만 가지고 있습니다.
+마찬가지로, 질문에 대한 답을 테이블에서 조회하는 역할을 수행하는 모델을 생각하보겠습니다. 입력이 이산적(discrete)인 경우, 많은 샘플을 보는 것을 통해서 잘 동작할 수 있습니다. 하지만, 이 모델은 데이터가 실수값이거나 우리가 원하는 것보다 더 부족한 경우 실제 상황에서는 잘 동작하지 않을 가능성이 높습니다. 더군다나, 우리는 모델을 저장할 수 있는 한정된 양의 메모리만 가지고 있습니다.
 
 Lastly, consider a trivial classification problem. Our training data consists of labels only, namely 0 for heads and 1 for tails, obtained by tossing a fair coin. No matter what we do, the generalization error will always be $\frac{1}{2}$. Yet the training error may be quite a bit less than that, depending on the luck of the draw. E.g. for the dataset {0, 1, 1, 1, 0, 1} we will 'predict' class 1 and incur an error of $\frac{1}{3}$, which is considerably better than what it should be. We can also see that as we increase the amount of data, the probability for large deviations from $\frac{1}{2}$ will diminish and the training error will be close to it, too. This is because our model 'overfit' to the data and since things will 'average out' as we increase the amount of data.
 
-**마지막으로, 간단한 분류 문제를 고려해보겠습니다. 공정한 동전을 던져서 앞면이 나오면 0, 뒷면이 나오면 1로 분류한 label을 갖는 학습 데이터가 있습니다. 우리가 무엇을 하던지 상관없이, 일반화 오류는 항상  $\frac{1}{2}$ 입니다. 하지만, 학습 오류는 동전을 던지는 운에 따라서 더 작아질 수 있습니다. 예를 들어 {0, 1, 1, 1, 0, 1}인 학습 데이터를 사용하는 경우에는, 1을 예측한다면,  $\frac{1}{3}$  의 오류가 발생하는데, 이는 실제 보다 더 좋은 값입니다. 데이터 양을 늘릴 수록,  확률의 편차가 $\frac{1}{2}$ 로 부터 감소하고, 학습 오류도 이에 근접하게될 것입니다. 그 이유는 우리의 모델이 데이터에 overfit 되어 있고, 데이터의 양을 늘리면 모든것이 평균상태가 되기 때문입니다.**
+마지막으로, 간단한 분류 문제를 고려해보겠습니다. 공정한 동전을 던져서 앞면이 나오면 0, 뒷면이 나오면 1로 분류한 label을 갖는 학습 데이터가 있습니다. 우리가 무엇을 하던지 상관없이, 일반화 오류는 항상  $\frac{1}{2}$ 입니다. 하지만, 학습 오류는 동전을 던지는 운에 따라서 더 작아질 수 있습니다. 예를 들어 {0, 1, 1, 1, 0, 1}인 학습 데이터를 사용하는 경우에는, 1을 예측한다면,  $\frac{1}{3}$  의 오류가 발생하는데, 이는 실제 보다 더 좋은 값입니다. 데이터 양을 늘릴 수록,  확률의 편차가 $\frac{1}{2}$ 로 부터 감소하고, 학습 오류도 이에 근접하게될 것입니다. 그 이유는 우리의 모델이 데이터에 overfit 되어 있고, 데이터의 양을 늘리면 모든것이 평균상태가 되기 때문입니다.
 
 ### Statistical Learning Theory
+
+## 통계적 학습 이론(Statistical Learning Theory)
 
 There is a formal theory of this phenomenon. Glivenko and Cantelli derived in their [eponymous theorem](https://en.wikipedia.org/wiki/Glivenko%E2%80%93Cantelli_theorem) the rate at which the training error converges to the generalization error. In a series of seminal papers [Vapnik and Chervonenkis](https://en.wikipedia.org/wiki/Vapnik%E2%80%93Chervonenkis_theory) extended this to much more general function classes. This laid the foundations of [Statistical Learning Theory](https://en.wikipedia.org/wiki/Statistical_learning_theory).
 
@@ -52,13 +57,15 @@ There is a formal theory of this phenomenon. Glivenko and Cantelli derived in th
 
 Unless stated otherwise, we assume that both the training set and the test set are drawn independently and identically drawn from the same distribution. This means that in drawing from the distribution there is no memory between draws. Moreover, it means that we use the same distribution in both cases. Obvious cases where this might be violated is if we want to build a face recognition by training it on elementary students and then want to deploy it in the general population. This is unlikely to work since, well, the students tend to look quite from the general population. By training we try to find a function that does particularly well on the training data. If the function is very fleible such as to be able to adapt well to any details in the training data, it might do a bit too well. This is precisely what we want to avoid (or at least control). Instead we want to find a model that reduces the generalization error. A lot of tuning in deep learning is devoted to making sure that this does not happen.
 
-특별히 이야기하지 않으면, 학습 데이터셋과 테스트 데이터셋은 동일한 분포로 부터 독립적으로 추출되었다고 가정합니다. 즉, 이 분포로부터 추출을 할 때 추출들간의 어떤 기억도 없다는 것을 의미합니다. 더 나아가, 두 경우 동일한 분포를 사용하는 것을 의미합니다. 이를 위반하는 명확한 사례로 초등학교 학생들의 얼굴 데이터로 학습한 얼굴 인식 모델을 이용해서 일반 인구에 적용하는 것을 들 수 있습니다. 초등학교 학생들과 일반 사람들은 아주 다르게 보일 것이기 때문에 잘 동작하지 않을 가능성이 높습니다. 학습을 통해서 우리는 학습 데이터에 잘 맞는 함수를 찾으려고 노력합니다. 만약 학습 데이터의 자세한 것에 아주 잘 적응할 정도로 유연하다면, 지나치게 잘하게 될 것입니다. 이것이 바로 우리가 피할려고 또는 통제하려는 것입니다. 대신, 우리는 일반화 오류를 줄이는 모델을 찾는 것을 원합니다. Deep learning의 많은 튜닝은 이런 것이 일어나지 않도록 하는데 이용됩니다.
+특별히 이야기하지 않으면, 학습 데이터셋과 테스트 데이터셋은 동일한 분포로 부터 독립적으로 추출되었다고 가정합니다. 즉, 이 분포로부터 추출을 할 때 추출들간의 어떤 기억도 없다는 것을 의미합니다. 더 나아가, 두 경우 동일한 분포를 사용하는 것을 의미합니다. 이를 위반하는 명확한 사례로 초등학교 학생들의 얼굴 데이터로 학습한 얼굴 인식 모델을 이용해서 일반 인구에 적용하는 것을 들 수 있습니다. 초등학교 학생들과 일반 사람들은 아주 다르게 보일 것이기 때문에 잘 동작하지 않을 가능성이 높습니다. 학습을 통해서 우리는 학습 데이터에 잘 맞는 함수를 찾으려고 노력합니다. 만약 학습 데이터의 자세한 것에 아주 잘 적응할 정도로 유연하다면, 지나치게 잘하게 될 것입니다. 이것이 바로 우리가 피하려고 또는 통제하려는 것입니다. 대신, 우리는 일반화 오류를 줄이는 모델을 찾는 것을 원합니다. Deep learning의 많은 튜닝은 이런 것이 일어나지 않도록 하는데 이용됩니다.
 
 ### Model Complexity
 
+## 모델 복잡도
+
 When we have simple models and abundant data, we expect the generalization error to resemble the training error. When we work with more complex models and fewer examples, we expect the training error to go down but the generalization gap to grow. What precisely constitutes model complexity is a complex matter. Many factors govern whether a model will generalize well. For example a model with more parameters might be considered more complex. A model whose parameters can take a wider range of values might be more complex. Often with neural networks, we think of a model that takes more training steps as more complex, and one subject to early stopping as less complex.
 
-우리는 간단한 모델들과 많은 데이터가 있을 경우, 일반화 오류가 학습 오류와 비슷해지기를 예상합니다. 반면에 모델이 복잡하고 데이터가 적을 때는, 학습 오류는 작아지지만, 일반화 오류는 커질 것을 예상합니다. 무엇이 정확하게 모델의 복잡성을 구성하는지는 복잡한 문제입니다. 모델이 일반화를 잘 할 수 있을지는 많은 것들에 의해서 영향을 받습니다. 예를 들면, 더 많은 파라메터를 갖는 모델이 더 복잡하다고 여기질 수 있고, 값의 범위가 더 넓은 파라메터를 갖는 모델이 더 복잡하다고 여겨질 수도 있습니다. 뉴럴 네트워크의 경우에는 학습을 더 오래한 모델이 더 복잡한 것이라고 생각될 수도 있고, 일찍 학습을 종료한 모델은 덜 복잡하다고 생각될 수도 있습니다.
+우리는 간단한 모델들과 많은 데이터가 있을 경우, 일반화 오류가 학습 오류와 비슷해 지기를 예상합니다. 반면에 모델이 복잡하고 데이터가 적을 때는, 학습 오류는 작아지지만, 일반화 오류는 커질 것을 예상합니다. 무엇이 정확하게 모델의 복잡성을 구성하는지는 복잡한 문제입니다. 모델이 일반화를 잘 할 수 있을지는 많은 것들에 의해서 영향을 받습니다. 예를 들면, 더 많은 파라메터를 갖는 모델이 더 복잡하다고 여기질 수 있고, 값의 범위가 더 넓은 파라메터를 갖는 모델이 더 복잡하다고 여겨질 수도 있습니다. 뉴럴 네트워크의 경우에는 학습을 더 오래한 모델이 더 복잡한 것이라고 생각될 수도 있고, 일찍 학습을 종료한 모델은 덜 복잡하다고 생각될 수도 있습니다.
 
 It can be difficult to compare the complexity among members of very different model classes (say decision trees versus neural networks). For now a simple rule of thumb is quite useful: A model that can readily explain arbitrary facts is what statisticians view as complex, whereas one that has only a limited expressive power but still manages to explain the data well is probably closer to the truth. In philosophy this is closely related to Popper’s criterion of [falsifiability](https://en.wikipedia.org/wiki/Falsifiability) of a scientific theory: a theory is good if it fits data and if there are specific tests which can be used to disprove it. This is important since all statistical estimation is [post hoc](https://en.wikipedia.org/wiki/Post_hoc), i.e. we estimate after we observe the facts, hence vulnerable to the associated fallacy. Ok, enough of philosophy, let’s get to more tangible issues.
 
@@ -73,25 +80,27 @@ To give you some intuition in this chapter, we’ll focus on a few factors that 
 1. The number of training examples. It’s trivially easy to overfit a dataset containing only one or two examples even if your model is simple. But overfitting a dataset with millions of examples requires an extremely flexible model.
 1. 튜닝이 가능한 파라메터의 개수. 자유도라고 하기도 하는 튜닝 가능한 파라메터의 수가 클 경우, 모델이 overfitting 에 더 취약한 경향이 있습니다.
 1. 파라메터에 할당된 값. weight들이 넒은 범위의 값을 갖을 경우, 모델은 overfitting에 더 취약할 수 있습니다.
-1. 학습 예제의 개수. 모델이 간단할지라도 학습 데이터라 한개 또는 두개인 경우에는 overfit 되기가 아주 쉽습니다. 하지만, 수백만개의 학습 데이터를 이용해서 모델을 overfitting 시키기 위해서는 모델이 아주 복잡해야 합니다.
-
+1. 학습 예제의 개수. 모델이 간단할 지라도 학습 데이터가 한 개 또는 두 개인 경우에는 overfit 되기가 아주 쉽습니다. 하지만, 수백만개의 학습 데이터를 이용해서 모델을 overfitting 시키기 위해서는 모델이 아주 복잡해야 합니다.
 
 ## Model Selection
 
+## 모델 선택
+
 In machine learning we usually select our model based on an evaluation of the performance of several candidate models.  This process is called model selection. The candidate models can be similar models using different hyper-parameters.  Using the multilayer perceptron as an example, we can select the number of hidden layers as well as the number of hidden units, and activation functions in each hidden layer.  A significant effort in model selection is usually required in order to end up with an effective model.  In the following section we will be describing the validation data set often used in model selection.
 
-머신러닝에서, 우리는 보통 여러 후보 모델들의 성능을 평가해서 모델을 선정합니다. 이 과정을 모델 선택 (model selection)이라고 합니다. 후보 모델들은 다른 hyper-parameter들을 적용한 간단한 모델들일 수 있습니다. Multilayer perceptron을 예로 들면, 우리는 hidden 래이어의 개수, hidden unit의 개수, 각 hidden 래이어의 activation 함수를 선택할 수 있습니다. 효과적인 모델을 찾기 위해서는 모델 선택에 상당한 노력이 필요합니다. 다음 절에서 모델 선택에 종종 사용되는 검증 데이터셋 (validation data set)에 대해서 설명하겠습니다.
-
+머신러닝에서, 우리는 보통 여러 후보 모델들의 성능을 평가해서 모델을 선정합니다. 이 과정을 모델 선택 (model selection)이라고 합니다. 후보 모델들은 다른 hyper-parameter들을 적용한 간단한 모델들일 수 있습니다. Multilayer perceptron을 예로 들면, 우리는 hidden 레이어의 개수, hidden unit의 개수, 각 hidden 레이어의 activation 함수를 선택할 수 있습니다. 효과적인 모델을 찾기 위해서는 모델 선택에 상당한 노력이 필요합니다. 다음 절에서 모델 선택에 종종 사용되는 검증 데이터셋 (validation data set)에 대해서 설명하겠습니다.
 
 ### Validation Data Set
 
+### 검증 데이터셋 
+
 Strictly speaking, the test set can only be used after all the hyper-parameters and model parameters have been selected. In particular, the test data must not be used in model selection process, such as in the tuning of hyper-parameters.  We should not rely solely on the training data during model selection, since the generalization error rate cannot be estimated from the training error rate.  Bearing this in mind, we can reserve a portion of data outside of the training and testing data sets to be used in model selection.  This reserved data is known as the validation data set, or validation set.  For example, a small, randomly selected portion from a given training set can be used as a validation set, with the remainder used as the true training set.
 
-엄적하게 이야기하면, 테스트 셋은 모든 hyper-parameter들과 모델 파라메터들이 선택된 후에만 사용되어야 합니다. 특히, 테스트 데이터셋은 hyper-parameter 선택과 같은 모델 선택 과정에서 사용되서는 안됩니다. 모델 선택 과정에서 학습 데이터에만 의존해서도 안됩니다. 그 이유는 일반화 오류율이 학습 오류율로 예상될 수 없기 때문입니다. 이를 염두해두면, 학습 데이터와 테스트 데이터 이외의 데이터를 확보해서 모델 선택에 사용할 수 있습니다. 이렇게 확보한 데이터는 검증 데이터 셋(validation data set) 또는 검증셋(validation set)이라고 합니다. 예를 들면, 학습 데이터에서 임의로 선택한 일부의 데이터를 검증 셋으로 사용하고, 나머지를 실제 학습 데이터로 사용할 수 있습니다.
+엄밀하게 이야기하면, 테스트 셋은 모든 hyper-parameter들과 모델 파라메터들이 선택된 후에만 사용되어야 합니다. 특히, 테스트 데이터셋은 hyper-parameter 선택과 같은 모델 선택 과정에서 사용되서는 안됩니다. 모델 선택 과정에서 학습 데이터에만 의존해서도 안됩니다. 그 이유는 일반화 오류율이 학습 오류율로 예상될 수 없기 때문입니다. 이를 고려해서, 학습 데이터와 테스트 데이터 이외의 데이터를 확보해서 모델 선택에 사용할 수 있습니다. 이렇게 확보한 데이터는 검증 데이터 셋(validation data set) 또는 검증셋(validation set)이라고 합니다. 예를 들면, 학습 데이터에서 임의로 선택한 일부의 데이터를 검증 셋으로 사용하고, 나머지를 실제 학습 데이터로 사용할 수 있습니다.
 
 However, in practical applications the test data is rarely discarded after one use since it’s not easily obtainable.  Therefore, in practice, there may be unclear boundaries between validation and testing data sets.  Unless explicitly stated, the test data sets used in the experiments provided in this book should be considered as validation sets, and the test accuracy in the experiment report are for validation accuracy. The good news is that we don't need too much data in the validation set. The uncertainty in our estimates can be shown to be of the order of $O(n^{-\frac{1}{2}})$.
 
-하지만, 실제 응용의 경우에는 테스트 데이터를 구하기 어렵기 때문에 한번 사용하고 버리는 경우가 드뭅니다. 따라서, 실제의 경우에는 검증 데이터와 테스트 데이터 셋의 구분이 명확하지 않을 수도 있습니다. 명시적으로 별도로 언급하지 않는 경우 이 책에서 실험으로 사용하는 테스트 데이터셋은 검증 데이터 셋이라고 하고, 실험 결과의 테스트 정확도는 검증 정확도를 의미하겠습니다. 좋은 소식은 검증 셋에 아주 많은 데이터가 필요하지 않다는 것입니다. 우리의 예측의 불명확성은  $O(n^{-\frac{1}{2}})$ 오더로 보여질 수 있습니다.
+하지만, 실제 응용의 경우에는 테스트 데이터를 구하기 어렵기 때문에 한번 사용하고 버리는 경우가 드뭅니다. 따라서, 실제의 경우에는 검증 데이터와 테스트 데이터 셋의 구분이 명확하지 않을 수도 있습니다. 명시적으로 별도로 언급하지 않는 경우 이 책에서 실험으로 사용하는 테스트 데이터셋은 검증 데이터 셋이라고 하고, 실험 결과의 테스트 정확도는 검증 정확도를 의미하겠습니다. 좋은 소식은 검증 셋에 아주 많은 데이터가 필요하지 않다는 것입니다. 우리의 예측의 불명확성은  $O(n^{-\frac{1}{2}})​$ 오더로 보여질 수 있습니다.
 
 
 ### $K$-Fold Cross-Validation
@@ -101,13 +110,14 @@ When there is not enough training data, it is considered excessive to reserve a 
 학습 데이터가 충분하지 않을 경우 검증 데이터를 많이 확보하는 것은 과하다고 간주됩니다. 왜냐하면, 검증 데이터는 모델 학습에 어떤 역할도 할 수 없기 때문입니다. 이에 대한 해결책으로 $K$-fold cross-validation 방법이 있습니다.  $K$-fold cross-validation 에서는 원래 학습 데이터를 겹치지 않는 K개의 부분 데이터셋으로 나누고, 모델 학습과 검증을  $K$ 번 반복합니다. 검증이 수행될 때마다  $K-1$ 개의 부분 데이터셋으로 학습을 하고, 1개의 부분 데이터셋으로 검증을 수행합니다. 모델을 검증하는데 사용하는 부분 데이터셋은 계속 바꾸면서 $K$ 번 학습과 검증을 수행하게 됩니다. 마지막으로, $K$ 번의 학습과 검증 오류에 대한 평균을 각각 구합니다.
 
 
-## Underfitting and Overfitting
+## Underfitting과 Overfitting
 
 Next, we will look into two common problems that occur during model training.  One type of problem occurs when the model is unable to reduce training errors since the model is too simplistic. This phenomenon is known as underfitting.  As discussed, another type of problem is when the number of model training errors is significantly less than that of the testing data set, also known as overfitting.  In practice, both underfitting and overfitting should be dealt with simultaneously whenever possible.  Although many factors could cause the above two fitting problems, for the time being we’ll be focusing primarily on two factors: model complexity and training data set size.
 
-다음으로는 모델 학습을 진행하면서 만나게 되는 일반적인 두가지 문제에 대해서 살펴보겠습니다. 첫번째 문제는 모델이 너무 간단하기 때문에 학습 오류가 줄어들지 않는 것입니다. 이 현상을 underfitting 이라고 합니다. 두번째 문제는 앞에서 이야기했던 overfitting 으로, 이는 학습 오류가 테스트 데이터셋에 대한 오류보다 아주 작은 경우입니다. 실제로 이 두 문제는 가능한 경우 항상 동시에 해결되야 합니다. 이 두 문제의 원인은 여러 요소들이 있지만, 여기서는 두가지 요소에 대해서 집중하겠습니다. 이 두가지는 모델 보잡성과 학습 데이터 셋 크기입니다.
+다음으로는 모델 학습을 진행하면서 만나게 되는 일반적인 두가지 문제에 대해서 살펴보겠습니다. 첫번째 문제는 모델이 너무 간단하기 때문에 학습 오류가 줄어들지 않는 것입니다. 이 현상을 underfitting 이라고 합니다. 두번째 문제는 앞에서 이야기했던 overfitting 으로, 이는 학습 오류가 테스트 데이터셋에 대한 오류보다 아주 작은 경우입니다. 실제로 이 두 문제는 가능한 경우 항상 동시에 해결이 되어야 합니다. 이 두 문제의 원인은 여러 요소들이 있지만, 여기서는 두가지 요소에 대해서 집중하겠습니다. 이 두가지는 모델 보잡성과 학습 데이터 셋 크기입니다.
 
 ### Model Complexity
+### 모델 복잡도
 
 We use polynomials as a way to illustrate the issue. Given training data consisting of the scalar data feature $x$ and the corresponding scalar label $y$, we try to find a polynomial of degree $d$
 
@@ -121,20 +131,21 @@ to estimate $y$. Here $w_i$ refers to the model’s weight parameter. The bias i
 
 A higher order polynomial function is more complex than a lower order polynomial function, since the higher-order polynomial has more parameters and the model function’s selection range is wider.  Therefore, using the same training data set, higher order polynomial functions should be able to achieve a lower training error rate (relative to lower degree polynomials).  Bearing in mind the given training data set, the typical relationship between model complexity and error is shown in the diagram below. If the model is too simple for the dataset, we are likely to see underfitting, whereas if we pick an overly complex model we see overfitting. Choosing an appropriately complex model for the data set is one way to avoid underfitting and overfitting.
 
-고차원의 다항 함수는 저차원의 다항 함수보다 더 복잡합니다. 이유는 차원이 더 높아지면, 더 많은 파라메터를 갖게 되고, 모델 함수의 선택 범위가 더 넓어지기 때문입니다. 따라서, 같은 학습 데이터셋을 사용하는 경우, 더 높은 차원의 다항 함수에 대한 학습 오류는 그 보다 낮은 차원의 다항 함수의 오류보다 낮을 것입니다. 이를 염두하면, 학습 데이터셋이 고정되어 있을 때 모델의 복잡도와 오류의 일반적인 상관관계는 아래 그림으로 설명됩니다. 데이터에 비해서 모델이 너무 간단하면, underfitting 이 발생하고, 모델을 너무 복잡하게 선택하면 overfitting 이 발생합니다. 데이테에 대한 모델을 적절한 복잡성을 선택하는 것이 overfitting 과 underfitting 문제를 피하는 방법 중에 하나입니다.
+고차원의 다항 함수는 저차원의 다항 함수보다 더 복잡합니다. 이유는 차원이 더 높아지면, 더 많은 파라메터를 갖게 되고, 모델 함수의 선택 범위가 더 넓어지기 때문입니다. 따라서, 같은 학습 데이터셋을 사용하는 경우, 더 높은 차원의 다항 함수에 대한 학습 오류는 그 보다 낮은 차원의 다항 함수의 오류보다 낮을 것입니다. 이를 염두하면, 학습 데이터셋이 고정되어 있을 때 모델의 복잡도와 오류의 일반적인 상관관계는 아래 그림으로 설명됩니다. 데이터에 비해서 모델이 너무 간단하면, underfitting 이 발생하고, 모델을 너무 복잡하게 선택하면 overfitting 이 발생합니다. 데이터에 대한 모델을 적절한 복잡성을 선택하는 것이 overfitting 과 underfitting 문제를 피하는 방법 중에 하나입니다.
 
 
 ![Influence of Model Complexity on Underfitting and Overfitting](../img/capacity_vs_error.svg)
 
 
 ### Data Set Size
+### 데이터 셋 크기
 
 Another influence is the amount of training data. Typically, if there are not enough samples in the training data set, especially if the number of samples is less than the number of model parameters (count by element), overfitting is more likely to occur. Additionally, as we increase the amount of training data, the generalization error typically decreases. This means that more data never hurts. Moreover, it also means that we should typically only use complex models (e.g. many layers) if we have sufficient data.
 
-다른 원인은 학습 데이터의 양입니다. 일반적으로 학습 데이터셋의 샘플 개수가 충분하지 않은 경우, 특히 모델의 파라메터 개수보다 적은 수의 샘플을 사용하는 경우, overfitting 이 쉽게 발생합니다. 학습 데이터의 양을 늘리면, 일반화 오류는 일반적으로 줄어듭니다. 즉, 더 많은 데이터는 모델 학습에 나쁜 영향을 미치지 않다는 것을 의미합니다. 더 나아가서, 이는 충분한 데이터가 있다면, 일반적으로 많은 래이어들을 갖는 복잡한 모델을 사용해야한다는 것을 의미합니다.
+다른 원인은 학습 데이터의 양입니다. 일반적으로 학습 데이터셋의 샘플 개수가 충분하지 않은 경우, 특히 모델의 파라메터 개수보다 적은 수의 샘플을 사용하는 경우, overfitting 이 쉽게 발생합니다. 학습 데이터의 양을 늘리면, 일반화 오류는 일반적으로 줄어듭니다. 즉, 더 많은 데이터는 모델 학습에 나쁜 영향을 미치지 않다는 것을 의미합니다. 더 나아가서, 이는 충분한 데이터가 있다면, 일반적으로 많은 레이어들을 갖는 복잡한 모델을 사용해야한다는 것을 의미합니다.
 
 
-## Polynomial Regression
+## 다항식 회귀(Polynomial Regression)
 
 Let us try how this works in practice by fitting polynomials to data. As before we start by importing some modules.
 
@@ -151,6 +162,7 @@ from mxnet.gluon import data as gdata, loss as gloss, nn
 ```
 
 ### Generating Data Sets
+### 데이터 셋 생성하기
 
 First we need data. Given $x$ we will use the following cubic polynomial to generate the labels on training and test data:
 
@@ -191,6 +203,7 @@ features[:2], poly_features[:2], labels[:2]
 ```
 
 ### Defining, Training and Testing Model
+### 모델 정의, 학습, 그리고 테스트
 
 We first define the plotting function`semilogy`, where the $y$ axis makes use of the logarithmic scale.
 
@@ -245,6 +258,7 @@ def fit_and_plot(train_features, test_features, train_labels, test_labels):
 ```
 
 ### Third-order Polynomial Function Fitting (Normal)
+### 3차 다항 함수 피팅(Third-order Polynomial Function Fitting (Normal))
 
 We will begin by first using a third-order polynomial function with the same order as the data generation function. The results show that this model’s training error rate when using the testing data set is low. The trained model parameters are also close to the true values $w = [5, 1.2, -3.4, 5.6]$.
 
@@ -259,6 +273,7 @@ fit_and_plot(poly_features[:n_train, 0:4], poly_features[n_train:, 0:4],
 ```
 
 ### Linear Function Fitting (Underfitting)
+### 선형 함수 피팅 (Underfitting)
 
 Let’s take another look at linear function fitting.  Naturally, after the decline in the early epoch, it’s difficult to further decrease this model’s training error rate.  After the last epoch iteration has been completed, the training error rate is still high.  When used in data sets generated by non-linear models (like the third-order polynomial function) linear models are susceptible to underfitting.
 
@@ -272,6 +287,7 @@ fit_and_plot(poly_features[:n_train, 0:3], poly_features[n_train:, 0:3],
 ```
 
 ### Insufficient Training (Overfitting)
+### 부족한 학습 (Overfitting)
 
 In practice, if the model hasn’t been trained sufficiently, it is still easy to overfit even if a third-order polynomial function with the same order as the data generation model is used.  Let's train the model using a polynomial of too high degree. There is insufficient data to pin down the fact that all higher degree coefficients are close to zero. This will result in a model that’s too complex to be easily influenced by noise in the training data.  Even if the training error rate is low, the testing error data rate will still be high.
 
@@ -292,22 +308,24 @@ fit_and_plot(poly_features[1:n_subset, 0:n_degree],
 
 Further along in later chapters, we will continue discussing overfitting problems and methods for dealing with them, such as weight decay and dropout.
 
-다음 장들에서 overfitting 문제들을 계속 논의하고, 이를 해결해기 위한 weight decay와 dropout 과 같은 방법을 알아보겠습니다.
+다음 장들에서 overfitting 문제들을 계속 논의하고, 이를 해결하기 위한 weight decay와 dropout 과 같은 방법을 알아보겠습니다.
 
 
 ## Summary
+## 요약
 
 * Since the generalization error rate cannot be estimated based on the training error rate, simply minimizing the training error rate will not necessarily mean a reduction in the generalization error rate. Machine learning models need to be careful to safeguard against overfitting such as to minimize the generalization error.
 * A validation set can be used for model selection (provided that it isn't used too liberally).
 * Underfitting means that the model is not able to reduce the training error rate while overfitting is a result of the model training error rate being much lower than the testing data set rate.
 * We should choose an appropriately complex model and avoid using insufficient training samples.
-* 일반화 오류율은 학습 오류율을 이용해서 추정될 수 없기 때문에, 단순히 학습 오류율을 줄이는 것이 일반화 오류를 줄이는 것을 의미하지 않습니다. 머신 러닝 모델은 일반화 오류를 줄이기를 통해서 overfitting에 조심스럽게 대비해야합니다.
+* 일반화 오류율은 학습 오류율을 이용해서 추정될 수 없기 때문에, 단순히 학습 오류율을 줄이는 것이 일반화 오류를 줄이는 것을 의미하지 않습니다. 머신 러닝 모델은 일반화 오류를 줄이기를 통해서 overfitting에 조심스럽게 대비 해야합니다.
 * 검증 셋은 모델 선택에 사용됩니다. (너무 남용되지 않는다는 가정에서)
 * Underfitting 은 모델이 학습 오류를 줄이지 못하는 상황을 의미하고, overfitting은 모델 학습 오류가 테스트 데이터의 오류보다 훨씬 작은 경우를 의미합니다.
 * 우리는 적절한 모델의 복잡성을 선택해야하고, 부족한 학습 샘플을 이용하는 것을 피해야합니다.
 
 
 ## Problems
+## 문제
 
 1. Can you solve the polynomial regression problem exactly? Hint - use linear algebra.
 1. Model selection for polynomials
@@ -322,8 +340,8 @@ Further along in later chapters, we will continue discussing overfitting problem
     - 학습 오류와 모델 복잡도(다항식의 차원 수)를 도식화해보세요. 무엇이 관찰되나요?
     - 이 경우 테스트 오류를 도식화해보세요.
     - 같은 그래프를 데이터 양에 따라서 그려보세요.
-1. 다항식의 feature  $x^i$ 에 적용한 정규화 $1/i!$ 를 제거하면 어떤일이 일어날까요? 다른 방법으로 이를 해결할 수 있나요?
-1. 학습 오류를 0으로 줄이기 위해서 몇차원을 사용하나요?
+1. 다항식의 feature  $x^i$ 에 적용한 정규화 $1/i!$ 를 제거하면 어떤 일이 일어날까요? 다른 방법으로 이를 해결할 수 있나요?
+1. 학습 오류를 0으로 줄이기 위해서 몇 차원을 사용하나요?
 1. 일반화 오류를 0으로 줄이는 것이 가능한가요?
 
 ## Scan the QR Code to [Discuss](https://discuss.mxnet.io/t/2341)

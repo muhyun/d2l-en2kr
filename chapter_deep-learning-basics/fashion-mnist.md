@@ -1,13 +1,17 @@
 # Image Classification Data (Fashion-MNIST)
 
+# 이미지 분류 데이터 (Fashion-MNIST)
+
 Before introducing the implementation for softmax regression, we need a suitable dataset. To make things more visually compelling we pick one on classification.
 It will be used multiple times in later chapters to allow us to observe the difference between model accuracy and computational efficiency between comparison algorithms. The most commonly used image classification data set is the [MNIST](http://yann.lecun.com/exdb/mnist/) handwritten digit recognition data set. It was proposed by LeCun, Cortes and Burges in the 1990s. However, most models have a classification accuracy of over 95% on MNIST, hence it is hard to spot the difference between different models. In order to get a better intuition about the difference between algorithms we use a more complex data set. [Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist) was proposed by [Xiao, Rasul and Vollgraf](https://arxiv.org/abs/1708.07747) in 2017.
 
 softmax regression 구현에 앞서 적절한 데이터셋이 필요합니다. 시각적으로 돋보이는 것을 만들기 위해서, 분류 문제에서 선택해보겠습니다. 
 
-다음 장들에서 모델 정확도의 차이를 관찰하거나, 비교 알고리즘의 연산 효율성에 대한 이야기를 하는데에도 반복해서 사용할 예제입니다. 가장 흔한 이미지 분류 데이터셋은 MNIST 손글씨 숫자 인식 데이터셋이 있습니다. 이 데이터셋은 1990년 대에 Lecun, Cortes와 Burges에 의해서 제안되었습니다. 하지만, 거의 모든 모델이 MNIST 데이터셋에 대해서 95% 이상의 정확도를 보여주기 때문에, 모델들 사이의 차이를 설명하는데는 적합하지 않습니다. 알고리즘들의 차이를 보다 직관적으로 보여주기 위해서, 더 복잡한 데이터셋을 사용하겠습니다. 이 데이터셋은 Fashion-MNIST라를 것으로 2017년에 Xio, Rasul 그리고 Vollgraf가 제안했습니다. 
+다음 장들에서 모델 정확도의 차이를 관찰하거나, 비교 알고리즘의 연산 효율성에 대한 이야기를 할 때에도 반복해서 사용할 예제입니다. 가장 흔한 이미지 분류 데이터셋은 MNIST 손글씨 숫자 인식 데이터셋이 있습니다. 이 데이터셋은 1990년 대에 Lecun, Cortes와 Burges에 의해서 제안되었습니다. 하지만, 거의 모든 모델이 MNIST 데이터셋에 대해서 95% 이상의 정확도를 보여주기 때문에, 모델들 사이의 차이를 설명하기에 적합하지 않습니다. 알고리즘들의 차이를 보다 직관적으로 보여주기 위해서, 더 복잡한 데이터셋을 사용하겠습니다. 이 데이터셋은 Fashion-MNIST라를 것으로 2017년에 Xio, Rasul 그리고 Vollgraf가 제안했습니다. 
 
 ## Getting the Data
+
+## 데이터 구하기
 
 First, import the packages or modules required in this section.
 
@@ -26,7 +30,7 @@ import time
 
 Next, we will download this data set through Gluon's `data` package. The data is automatically retrieved from the Internet the first time it is called. We specify the acquisition of a training data set, or a testing data set by the parameter `train`. The test data set, also called the testing set, is only used to evaluate the performance of the model and is not used to train the model.
 
-다음으로, Gluon의 `data` 패키지를 이용해서 이 데이터셋을 다운로드합니다. 데이터셋은 처음 불려였을 때, 인터넷으로부터 자동으로 다운로드됩니다. `train` 파라메터를 통해서 학습 데이터셋을 받을 것인지 테스트 데이터셋을 받을 것인지를 정할 수 있습니다. 테스트 데이터셋 또는 테스팅 데이터셋은 모델의 성능을 평가할 때만 쓰이고, 학습에는 사용되지 않는 데이터입니다.
+다음으로, Gluon의 `data` 패키지를 이용해서 이 데이터셋을 다운로드합니다. 데이터셋은 처음 불렸을 때, 인터넷으로부터 자동으로 다운로드됩니다. `train` 파라메터를 통해서 학습 데이터셋을 받을 것인지 테스트 데이터셋을 받을 것인지를 정할 수 있습니다. 테스트 데이터셋 또는 테스팅 데이터셋은 모델의 성능을 평가할 때만 쓰이고, 학습에는 사용되지 않는 데이터입니다.
 
 ```{.python .input  n=23}
 mnist_train = gdata.vision.FashionMNIST(train=True)
@@ -49,9 +53,9 @@ We can access any example by square brackets `[]`, and next, we will get the ima
 feature, label = mnist_train[0]
 ```
 
-The variable `feature` corresponds to an image with a height and width of 28 pixels. Each pixel is an 8-bit unsigned integer (uint8) with values between 0 and 255. It is stored in a 3D NDArray. Its last dimension is the number of channels. Since the data set is a grayscale image, the number of channels is 1. For the sake of simplicity, we will record the shape of the image with the height and width of $h$ and $w$ pixels, respectively, as $h \times w$ or `(h, w)`.
+The variable `feature` corresponds to an image with a height and width of 28 pixels. Each pixel is an 8-bit unsigned integer (uint8) with values between 0 and 255. It is stored in a 3D NDArray. Its last dimension is the number of channels. Since the data set is a grayscale image, the number of channels is 1. For the sake of simplicity, we will record the shape of the image with the height and width of $h​$ and $w​$ pixels, respectively, as $h \times w​$ or `(h, w)`.
 
-`feature` 변수는 높이와 넒이가 모두 28 픽셀인 이미지 데이터를 가지고 있습니다. 각 픽셀은 8-bit unsigned integer (uint8)이고, 0부터 255 사이의 값을 갖습니다. 이는 3차원 NDArray에 저장됩니다. 마지막 차원은 채널의 개수를 의미합니다. 데이터 셋이 회색 이미지이기 때문에, 채널의 수는 1이 됩니다. 간단하게 하기 위해서, 이미지의 모양이 높이 `h`, 넓이는 `w` 픽셀인 경우 이미지의 shape을  $h \times w$ 또는  `(h, w)` 로 표기하도록 하겠습니다.
+`feature` 변수는 높이와 넓이가 모두 28 픽셀인 이미지 데이터를 가지고 있습니다. 각 픽셀은 8-bit unsigned integer (uint8)이고, 0부터 255 사이의 값을 갖습니다. 이는 3차원 NDArray에 저장됩니다. 마지막 차원은 채널의 개수를 의미합니다. 데이터 셋이 회색 이미지이기 때문에, 채널의 수는 1이 됩니다. 간단하게 하기 위해서, 이미지의 모양이 높이 `h`, 넓이는 `w` 픽셀인 경우 이미지의 shape을  $h \times w$ 또는  `(h, w)` 로 표기하도록 하겠습니다.
 
 ```{.python .input}
 feature.shape, feature.dtype
@@ -59,7 +63,7 @@ feature.shape, feature.dtype
 
 The label of each image is represented as a scalar in NumPy. Its type is a 32-bit integer.
 
-각 이미지에 대한 label은 NumPy의 scalar로 저장되어있고, 이는 32-bit integer 형태입니다.
+각 이미지에 대한 label은 NumPy의 scalar로 저장되어 있고, 이는 32-bit integer 형태입니다.
 
 ```{.python .input}
 label, type(label), label.dtype
@@ -67,7 +71,7 @@ label, type(label), label.dtype
 
 There are 10 categories in Fashion-MNIST: t-shirt, trousers, pullover, dress, coat, sandal, shirt, sneaker, bag and ankle boot. The following function can convert a numeric label into a corresponding text label.
 
-Fashion-MNIST에는 10개의 카테고리가 있는데, 이들은 티셔츠, 바지, 풀오버, 드래스, 코드, 센달, 셔츠, 스니커, 가방, 발목 부츠입니다. 숫자 형태의 label을 텍스트 label로 바꿔주는 함수를 아래와 같이 정의합니다.
+Fashion-MNIST에는 10개의 카테고리가 있는데, 이들은 티셔츠, 바지, 풀오버, 드레스, 코드, 센달, 셔츠, 스니커, 가방, 발목 부츠입니다. 숫자 형태의 label을 텍스트 label로 바꿔주는 함수를 아래와 같이 정의합니다.
 
 ```{.python .input  n=25}
 # This function has been saved in the d2l package for future use
@@ -105,9 +109,11 @@ show_fashion_mnist(X, get_fashion_mnist_labels(y))
 
 ## Reading a Minibatch
 
+## 미니배치 읽기
+
 To make our life easier when reading from the training and test sets we use a `DataLoader` rather than creating one from scratch, as we did in the section on ["Linear Regression Implementation Starting from Scratch"](linear-regression-scratch.md). The data loader reads a mini-batch of data with an example number of `batch_size` each time.
 
-학습 데이터나 테스트 데이터를 읽는 코드를  ["Linear Regression Implementation Starting from Scratch"](linear-regression-scratch.md) 에서 처럼 직접 작성하지 않고 `DataLoad` 를 사용하도록 하겠습니다. 데이터 로더는 매 번 `batch_size` 개수의 샘플을 갖는 미니 배치를 읽습니다.
+학습 데이터나 테스트 데이터를 읽는 코드를  ["Linear Regression Implementation Starting from Scratch"](linear-regression-scratch.md) 에서처럼 직접 작성하지 않고 `DataLoad` 를 사용하도록 하겠습니다. 데이터 로더는 매 번 `batch_size` 개수의 샘플을 갖는 미니 배치를 읽습니다.
 
 In practice, data reading is often a performance bottleneck for training, especially when the model is simple or when the computer is fast. A handy feature of Gluon's `DataLoader` is the ability to use multiple processes to speed up data reading (not currently supported on Windows). For instance, we can set aside 4 processes to read the data (via `num_workers`).
 
@@ -137,11 +143,11 @@ test_iter = gdata.DataLoader(mnist_test.transform_first(transformer),
 
 The logic that we will use to obtain and read the Fashion-MNIST data set is encapsulated in the `d2l.load_data_fashion_mnist` function, which we will use in later chapters. This function will return two variables, `train_iter` and `test_iter`. As the content of this book continues to deepen, we will further improve this function. Its full implementation will be described in the section ["Deep Convolutional Neural Networks (AlexNet)"](../chapter_convolutional-neural-networks/alexnet.md).
 
-Fashion-MNIST 데이터 셋을 가지고 와서 읽는 로직은 `g2l.load_data_fashion_mnist` 함수 내부에 구현되어 있습니다. 이 함수는 다음 장들에서 사용될 예정입니다. 이 함수는 `train_iter` 와 `test_iter` 두 변수를 리턴합니다. 이 책에서는 내용이 깊어지에 따라 이 함수를 향상시켜보겠습니다. 전체 구현에 대한 자세한 내용은  ["Deep Convolutional Neural Networks (AlexNet)"](../chapter_convolutional-neural-networks/alexnet.md) 절에서 설명하겠습니다.
+Fashion-MNIST 데이터 셋을 가지고 와서 읽는 로직은 `g2l.load_data_fashion_mnist` 함수 내부에 구현되어 있습니다. 이 함수는 다음 장들에서 사용될 예정입니다. 이 함수는 `train_iter` 와 `test_iter` 두 변수를 리턴합니다. 이 책에서는 내용이 깊어짐에 따라 이 함수를 향상시켜보겠습니다. 전체 구현에 대한 자세한 내용은  ["Deep Convolutional Neural Networks (AlexNet)"](../chapter_convolutional-neural-networks/alexnet.md) 절에서 설명하겠습니다.
 
 Let's look at the time it takes to read the training data.
 
-학습 데이터를 읽는데 걸리는 시간을 측정하보겠습니다.
+학습 데이터를 읽는데 걸리는 시간을 측정해 보겠습니다.
 
 ```{.python .input}
 start = time.time()
@@ -152,14 +158,18 @@ for X, y in train_iter:
 
 ## Summary
 
+## 요약
+
 * Fashion-MNIST is an apparel classification data set containing 10 categories, which we will use to test the performance of different algorithms in later chapters.
 * We store the shape of image using height and width of $h$ and $w$ pixels, respectively, as $h \times w$ or `(h, w)`.
 * Data iterators are a key component for efficient performance. Use existing ones if available.
 * Fashion-MNIST는 의류 분류 데이터 셋으로 10개의 카테고리로 분류되어 있습니다. 다음 장들에서 다양한 알고리즘의 성능을 테스트하는데 사용할 예정입니다.
 * 이미지의 shape은 높이 `h` 픽셀, 넓이 `w` 픽셀을 이용해서  $h \times w$ 나 `(h, w)` 로 저장됩니다.
-* 데이터 이터레이터는 효율적인 성능을 위한 중요한 컴포넌트입니다. 가능하면 제공되는 것들을 사용하세요.
+* 데이터 이터레이터(iterator)는 효율적인 성능을 위한 중요한 컴포넌트입니다. 가능하면 제공되는 것들을 사용하세요.
 
 ## Problems
+
+## 문제
 
 1. Does reducing `batch_size` (for instance, to 1) affect read performance?
 1. For non-Windows users, try modifying `num_workers` to see how it affects read performance.

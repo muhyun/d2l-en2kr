@@ -2,16 +2,18 @@
 
 In the previous chapter, we introduced one classical approach to regularize statistical models. We penalized the size (the $\ell_2$ norm) of the weights, coercing them to take smaller values. In probabilistic terms we might say that this imposes a Gaussian prior on the value of the weights. But in more intuitive, functional terms, we can say that this encourages the model to spread out its weights among many features and not to depend too much on a small number of potentially spurious associations.
 
-앞에서 우리는 통계적인 모델을 정규화(regularize)하는 전통적인 방법을 알아봤습니다. weight의 크기 ($\ell_2$ norm)을 패널티로 사용해서, weight 값이 강제로 작아지도록 했습니다. 확률적인 용어로 말하자만, Gaussian prior를 weight 값에 적용한다고 할 수 있습니다. 하지만, 더 직관적인 함수의 용어를 사용하면, weight 값들이 다른 feature들 사이에 더 확산되도록 하고, 잠재적으로 가짜 연관들에 더 적게 의존되도록 모델을 학습시킨다고 할 수 있습니다.
+앞에서 우리는 통계적인 모델을 정규화(regularize)하는 전통적인 방법을 알아봤습니다. weight의 크기 ($\ell_2$ norm)을 패널티로 사용해서, weight 값이 강제로 작아지도록 했습니다. 확률적인 용어로 말하자면, Gaussian prior를 weight 값에 적용한다고 할 수 있습니다. 하지만, 더 직관적인 함수의 용어를 사용하면, weight 값들이 다른 feature들 사이에 더 확산되도록 하고, 잠재적으로 가짜 연관들에 더 적게 의존되도록 모델을 학습시킨다고 할 수 있습니다.
 
 ## Overfitting Revisited
+
+## 오버피팅 다시 살벼보기
 
 With great flexibility comes overfitting liability.
 Given many more features than examples, linear models can overfit. But when there are many more examples than features, linear models can usually be counted on not to overfit. Unfortunately this propensity to generalize well comes at a cost. For every feature, a linear model has to assign it either positive or negative weight. Linear models can’t take into account nuanced interactions between features. In more formal texts, you’ll see this phenomena discussed as the bias-variance tradeoff. Linear models have high bias, (they can only represent a small class of functions), but low variance (they give similar results across different random samples of the data).
 
-뛰어난 유연성은 overfitting에 대한 책임이 따름니다. 
+뛰어난 유연성은 overfitting에 대한 책임이 따릅니다. 
 
-샘플들 보다 더 많은 feature들이 주어지면, 선형 모델은 overfit 될 수 있습니다. 반면에 feature 수 보다 샘플이가 더 많은 경우에는 선형 모델은 일반적으로 overfit 되지 않습니다. 아쉽게도, 일반화를 잘하기 위해서는 그에 따른 비용이 들어갑니다. 매 feature에 대해서, 선형 모델은 양수 또는 음수의 weight을 할당해야합니다. 선형 모델은 feature들 사이의 미묘한 상호작용을 설명하지 못 합니다. 좀 더 공식적인 용어로 이야기하면, bias-variance tradeoff 로 논의되는 현상을 볼 것입니다. Linear 모델은 높은 bias (표한할 수 있는 함수의 개수가 적습니다)를 보이나, variance 는 낮습니다 (다른 랜덤 샘플 데이터에 대해서 비슷한 결과를 줍니다)
+샘플들 보다 더 많은 feature들이 주어지면, 선형 모델은 overfit 될 수 있습니다. 반면에 feature 수 보다 샘플이 더 많은 경우에는 선형 모델은 일반적으로 overfit 되지 않습니다. 아쉽게도, 일반화를 잘하기 위해서는 그에 따른 비용이 들어갑니다. 매 feature에 대해서, 선형 모델은 양수 또는 음수의 weight을 할당 해야합니다. 선형 모델은 feature들 사이의 미묘한 상호작용을 설명하지 못 합니다. 좀 더 공식적인 용어로 이야기하면, bias-variance tradeoff 로 논의되는 현상을 볼 것입니다. Linear 모델은 높은 bias (표현할 수 있는 함수의 개수가 적습니다)를 보이나, variance 는 낮습니다 (다른 랜덤 샘플 데이터에 대해서 비슷한 결과를 줍니다)
 
 Deep neural networks, however, occupy the opposite end of the bias-variance spectrum. Neural networks are so flexible because they aren’t confined to looking at each feature individually. Instead, they can learn complex interactions among groups of features. For example, they might infer that “Nigeria” and “Western Union” appearing together in an email indicates spam but that “Nigeria” without “Western Union” does not connote spam.
 
@@ -23,17 +25,19 @@ Feature들의 개수가 적은 경우에도, 딥 뉴럴 네트워크는 overfitt
 
 ## Robustness through Perturbations
 
+## 변화를 통한 견고함
+
 Let's think briefly about what we expect from a good statistical model. Obviously we want it to do well on unseen test data. One way we can accomplish this is by asking for what amounts to a 'simple' model. Simplicity can come in the form of a small number of dimensions, which is what we did when discussing fitting a function with monomial basis functions. Simplicity can also come in the form of a small norm for the basis funtions. This is what led to weight decay and $\ell_2$ regularization. Yet a third way to impose some notion of simplicity is that the function should be robust under modest changes in the input. For instance, when we classify images, we would expect that alterations of a few pixels are mostly harmless.
 
-좋은 통계적인 모델로 부터 무엇을 기대할 수 있는지에 대해서 간단히 알아보겠습니다. 당연하게 우리는 이 모델이 보지 않은 테스트 데이터에 대해서 잘 작동하기를 기대합니다. 이를 달성하는 방법 중에 하나로 어떤 것이 "간단한" 모델을 만드는지를 묻는 것입니다. 단항 함수 (monomial basis function)을 사용해서 모델을 학습시키면서 언급했던 것처럼 차원의 수가 적은 것으로 부터 간단함이 유도될 수 있습니다. 또한 간단함은 기본이 되는 함수의 작은 norm의 형태로 만들어질 수도 있습니다. 즉, weight decay와  $\ell_2$ regularization이 그런 예입니다. 간단함을 만드는 또 다른 요소는 입력의 완만한 변화에도 큰 영향을 받지 않는 함수를 들 수 있습니다. 예를 들어 이미지를 분류할 때, 몇개의 픽셀들의 변경으로 인해서 결과에 영향을 미치지 않기를 기대하는 것입니다.
+좋은 통계적인 모델로 부터 무엇을 기대할 수 있는지에 대해서 간단히 알아보겠습니다. 당연하게 우리는 이 모델이 보지 않은 테스트 데이터에 대해서 잘 작동하기를 기대합니다. 이를 달성하는 방법 중에 하나로 어떤 것이 "간단한" 모델을 만드는지를 묻는 것입니다. 단항 함수 (monomial basis function)을 사용해서 모델을 학습시키면서 언급했던 것처럼 차원의 수가 적은 것으로부터 간단함이 유도될 수 있습니다. 또한 간단함은 기본이 되는 함수의 작은 norm의 형태로 만들어질 수도 있습니다. 즉, weight decay와  $\ell_2$ regularization이 그런 예입니다. 간단함을 만드는 또 다른 요소는 입력의 완만한 변화에도 큰 영향을 받지 않는 함수를 들 수 있습니다. 예를 들어 이미지를 분류할 때, 몇개의 픽셀들의 변경으로 인해서 결과에 영향을 미치지 않기를 기대하는 것입니다.
 
 In fact, this notion was formalized by Bishop in 1995, when he proved that [Training with Input Noise is Equivalent to Tikhonov Regularization](https://www.mitpressjournals.org/doi/10.1162/neco.1995.7.1.108). That is, he connected the notion of having a smooth (and thus simple) function with one that is resilient to perturbations in the input. Fast forward to 2014. Given the complexity of deep networks with many layers, enforcing smoothness just on the input misses out on what is happening in subsequent layers. The ingenious idea of [Srivastava et al., 2014](http://jmlr.org/papers/volume15/srivastava14a.old/srivastava14a.pdf) was to apply Bishop's idea to the *internal* layers of the network, too, namely to inject noise into the computational path of the network while it's training.
 
-사실 이 개념은 1995년 Bishop이  [Training with Input Noise is Equivalent to Tikhonov Regularization](https://www.mitpressjournals.org/doi/10.1162/neco.1995.7.1.108) 를 증명하면서  공식화되었습니다. 즉, 그는 부드러운 (따라서 간단한) 함수의 개념을 입력의 변화에 탄력적인 것과 연관을 시켰습니다. 2014년으로 흘러가서, 여러 래이어를 갖는 딥 네트워크의 복잡도가 주어졌을 때, 입력에 부드러움을 강제하는 것은 꼭 다음 레이어들에서도 보장되지는 않습니다.  [Srivastava et al., 2014](http://jmlr.org/papers/volume15/srivastava14a.old/srivastava14a.pdf) 에서 발표된 독창적인 아이디어는 Bishop의 아이디어를 네트워크의 내부 레이어들에 적용했습니다. 이는, 학습 과정에 네트워크 연산 경로에 노이즈를 집어넣는 것입니다.
+사실 이 개념은 1995년 Bishop이  [Training with Input Noise is Equivalent to Tikhonov Regularization](https://www.mitpressjournals.org/doi/10.1162/neco.1995.7.1.108) 를 증명하면서  공식화 되었습니다. 즉, 그는 부드러운 (따라서 간단한) 함수의 개념을 입력의 변화에 탄력적인 것과 연관을 시켰습니다. 2014년으로 흘러가서, 여러 레이어를 갖는 딥 네트워크의 복잡도가 주어졌을 때, 입력에 부드러움을 강제하는 것은 꼭 다음 레이어들에서도 보장되지는 않습니다.  [Srivastava et al., 2014](http://jmlr.org/papers/volume15/srivastava14a.old/srivastava14a.pdf) 에서 발표된 독창적인 아이디어는 Bishop의 아이디어를 네트워크의 내부 레이어들에 적용했습니다. 이는, 학습 과정에 네트워크 연산 경로에 노이즈를 집어넣는 것입니다.
 
 A key challenge in this context is how to add noise without introducing undue bias. In terms of inputs $\mathbf{x}$, this is relatively easy to accomplish: simply add some noise $\epsilon \sim \mathcal{N}(0,\sigma^2)$ to it and use this data during training via $\mathbf{x}' = \mathbf{x} + \epsilon$. A key property is that in expectation $\mathbf{E}[\mathbf{x}'] = \mathbf{x}$. For intermediate layers, though, this might not be quite so desirable since the scale of the noise might not be appropriate. The alternative is to perturb coordinates as follows:
 
-여기서 주요 과제는 지나친 bias를 추가하지 않으면서 어떻게 노이즈를 추가하는지 입니다. 입력  $\mathbf{x}$ 에 대해서는 노이즈를 추가하는 것은 상대적으로 간단합니다. 즉,  $\epsilon \sim \mathcal{N}(0,\sigma^2)$ 노이즈를 입력에 더한 후  $\mathbf{x}' = \mathbf{x} + \epsilon$  이 것을 학습 데이터로 사용하면 됩니다. 이렇게 했을 때 주요 특징은  $\mathbf{E}[\mathbf{x}'] = \mathbf{x}$ 을 갖는 것입니다. 하지만, 중간 래이어들에서는 이 노이즈의 스캐일이 적절하지 않을 수 있기 때문에 이 특징을 기대하기 어렵습니다. 대안은 다음과 같이 좌표를 뒤틀어 놓는 것입니다.
+여기서 주요 과제는 지나친 bias를 추가하지 않으면서 어떻게 노이즈를 추가하는지 입니다. 입력  $\mathbf{x}$ 에 대해서는 노이즈를 추가하는 것은 상대적으로 간단합니다. 즉,  $\epsilon \sim \mathcal{N}(0,\sigma^2)$ 노이즈를 입력에 더한 후  $\mathbf{x}' = \mathbf{x} + \epsilon$  이 것을 학습 데이터로 사용하면 됩니다. 이렇게 했을 때 주요 특징은  $\mathbf{E}[\mathbf{x}'] = \mathbf{x}$ 을 갖는 것입니다. 하지만, 중간 레이어들에서는 이 노이즈의 스캐일이 적절하지 않을 수 있기 때문에 이 특징을 기대하기 어렵습니다. 대안은 다음과 같이 좌표를 뒤틀어 놓는 것입니다.
 $$
 \begin{aligned}
 h' =
@@ -46,13 +50,15 @@ $$
 
 By design, the expectation remains unchanged, i.e. $\mathbf{E}[h'] = h$. This idea is at the heart of dropout where intermediate activations $h$ are replaced by a random variable $h'$ with matching expectation. The name 'dropout' arises from the notion that some neurons 'drop out' of the computation for the purpose of computing the final result. During training we replace intermediate activations with random variables
 
-설계상으로는 기대값이 변화지 않습니다. 즉, $\mathbf{E}[h'] = h$ 입니다. 중간 래이어들에 적용되는 activation $h$ 를 같은 기대값을 갖는 랜덤 변수  $h'$ 로 바꾸는 것이 dropout의 핵심 아이디어 입니다. 'dropout' 이라는 이름은 마지막 결과를 계산하기 위해서 사용되는 연산의 몇몇 뉴런들을 누락 (drop out) 시킨다는 개념에서 왔습니다. 학습 과정에서, 중간의 activation들을 랜덤 변수로 바꿉니다.
+설계상으로는 기대값이 변화지 않습니다. 즉, $\mathbf{E}[h'] = h$ 입니다. 중간 레이어들에 적용되는 activation $h$ 를 같은 기대값을 갖는 랜덤 변수  $h'$ 로 바꾸는 것이 dropout의 핵심 아이디어 입니다. 'dropout' 이라는 이름은 마지막 결과를 계산하기 위해서 사용되는 연산의 몇몇 뉴런들을 누락 (drop out) 시킨다는 개념에서 왔습니다. 학습 과정에서, 중간의 activation들을 랜덤 변수로 바꿉니다.
 
 ## Dropout in Practice
 
+## Dropout 실제 적용하기
+
 Recall the [multilayer perceptron](mlp.md) with a hidden layer and 5 hidden units. Its architecture is given by
 
-5개의 hidden unit을 갖는 한개의 hidden 래이어를 사용하는 [multilayer perceptron](mlp.md) 의 예를 다시 들어보겠습니다. 이 네트워크의 아키텍처는 다음과 같이 표현됩니다.
+5개의 hidden unit을 갖는 한개의 hidden 레이어를 사용하는 [multilayer perceptron](mlp.md) 의 예를 다시 들어보겠습니다. 이 네트워크의 아키텍처는 다음과 같이 표현됩니다.
 $$
 \begin{aligned}
     h & = \sigma(W_1 x + b_1) \\
@@ -63,16 +69,18 @@ $$
 
 When we apply dropout to the hidden layer, it amounts to removing hidden units with probability $p$ since their output is set to $0$ with that probability. A possible result is the network shown below. Here $h_2$ and $h_5$ are removed. Consequently the calculation of $y$ no longer depends on $h_2$ and $h_5$ and their respective gradient also vanishes when performing backprop. In this way, the calculation of the output layer cannot be overly dependent on any one element of $h_1, \ldots, h_5$. This is exactly what we want for regularization purposes to cope with overfitting. At test time we typically do not use dropout to obtain more conclusive results.
 
-Hidden 래이어에 dropout을 확률 $p$ 로 적용하는 경우, hidden unit들을 $p$ 확률로 제거하는 것이 됩니다. 이유는, 그 확률을 이용해서 output을 0으로 설정하기 때문입니다. 이를 적용한 네트워크는 아래 그림과 같습니다. 여기서  $h_2$ 와 $h_5$ 가 제거되었습니다. 결과적으로 $y$ 를 계산할 때, $h_2$ 와 $h_5$ 는 사용되지 않게 되고, backprop을 수행할 때 이 것들에 대한 gradient들도 적용되지 않습니다. 이렇게 해서 output 래이어를 계산할 때 $h_1, \ldots, h_5$ 중 어느 하나에 전적으로 의존되지 않게합니다. 이것이 overfitting 문제를 해결하는 정규화(regularization) 목적을 위해서 필요한 것입니다. 테스트 시에는, 더 확실한 결과를 얻기 위해서 dropout을 사용하지 않는 것이 일반적입니다.
+Hidden 레이어에 dropout을 확률 $p$ 로 적용하는 경우, hidden unit들을 $p$ 확률로 제거하는 것이 됩니다. 이유는, 그 확률을 이용해서 output을 0으로 설정하기 때문입니다. 이를 적용한 네트워크는 아래 그림과 같습니다. 여기서  $h_2$ 와 $h_5$ 가 제거되었습니다. 결과적으로 $y$ 를 계산할 때, $h_2$ 와 $h_5$ 는 사용되지 않게 되고, backprop을 수행할 때 이 것들에 대한 gradient들도 적용되지 않습니다. 이렇게 해서 output 레이어를 계산할 때 $h_1, \ldots, h_5$ 중 어느 하나에 전적으로 의존되지 않게 합니다. 이것이 overfitting 문제를 해결하는 정규화(regularization) 목적을 위해서 필요한 것입니다. 테스트 시에는, 더 확실한 결과를 얻기 위해서 dropout을 사용하지 않는 것이 일반적입니다.
 
 ![MLP before and after dropout](../img/dropout2.svg)
 
 ## Implementation from Scratch
 
+## 직접 구현하기
+
 To implement the dropout function we have to draw as many random variables as the input has dimensions from the uniform distribution $U[0,1]$.
 According to the definition of dropout, we can implement it easily. The following `dropout` function will drop out the elements in the NDArray input `X` with the probability of `drop_prob`.
 
-Dropout를 구현하기 위해서는 입력개수 만큼의 랜덤 변수를 균일한 분포 $U[0,1]$ 에서 추출해야합니다. Dropout의 정의에 따르면, 이를 간단하게 구현할 수 있습니다. 다음 `dropout` 함수는 NDArray 입력 `x` 의 원소들을 `drop_prob` 확률로 누락시킵니다. 
+Dropout를 구현하기 위해서는 입력 개수 만큼의 랜덤 변수를 균일한 분포 $U[0,1]$ 에서 추출 해야합니다. Dropout의 정의에 따르면, 이를 간단하게 구현할 수 있습니다. 다음 `dropout` 함수는 NDArray 입력 `x` 의 원소들을 `drop_prob` 확률로 누락시킵니다. 
 
 ```{.python .input}
 import sys
@@ -104,9 +112,11 @@ print(dropout(X, 1))
 
 ### Defining Model Parameters
 
+## 모델 파라메터 정의하기
+
 Let's use the same dataset as used previously, namely Fashion-MNIST, described in the section ["Softmax Regression - Starting From Scratch"](softmax-regression-scratch.md). We will define a multilayer perceptron with two hidden layers. The two hidden layers both have 256 outputs.
 
- ["Softmax Regression - Starting From Scratch"](softmax-regression-scratch.md) 절에서 사용한 Fashion-MNIST 데이터셋을 다시 사용합니다. 두개의 hidden 래이어들을 갖는 multilayer perceptron을 정의하는데, 각 hidden 래이어는 256개의 output을 출력합니다.
+ ["Softmax Regression - Starting From Scratch"](softmax-regression-scratch.md) 절에서 사용한 Fashion-MNIST 데이터셋을 다시 사용합니다. 두개의 hidden 레이어들을 갖는 multilayer perceptron을 정의하는데, 각 hidden 레이어는 256개의 output을 출력합니다.
 
 ```{.python .input}
 num_inputs, num_outputs, num_hiddens1, num_hiddens2 = 784, 10, 256, 256
@@ -125,9 +135,11 @@ for param in params:
 
 ### Define the Model
 
+## 모델 정의하기
+
 The model defined below concatenates the fully connected layer and the activation function ReLU, using dropout for the output of each activation function. We can set the dropout probability of each layer separately. It is generally recommended to set a lower dropout probability closer to the input layer. Below we set it to 0.2 and 0.5 for the first and second hidden layer respectively. By using the `is_training` function described in the ["Autograd"](../chapter_prerequisite/autograd.md) section we can ensure that dropout is only active during training.
 
-정의하는 모델은 각 activation 함수의 결과에 droput을 적용하면서 fully connected 래이어와 activation 함수ReLU를 연결하도록 되어 있습니다. 각 래이어에 서로 다른 dropout 확률을 설정할 수 있습니다. 일반적으로는 입력 래이어에 가까울 수록 낮은 dropout 확률값을 사용하는 것을 권장합니다. 아래 모델에서는 첫번째 래이어에는 0.2를 두번째 래이어에는 0.5를 적용하고 있습니다. ["Autograd"](../chapter_prerequisite/autograd.md) 절에서 정의한 `is_training` 을 사용하면, 학습할 때만 dropout 이 적용될 수 있게 할 수 있습니다.
+정의하는 모델은 각 activation 함수의 결과에 droput을 적용하면서 fully connected 레이어와 activation 함수ReLU를 연결하도록 되어 있습니다. 각 레이어에 서로 다른 dropout 확률을 설정할 수 있습니다. 일반적으로는 입력 레이어에 가까울 수록 낮은 dropout 확률값을 사용하는 것을 권장합니다. 아래 모델에서는 첫번째 레이어에는 0.2를 두번째 레이어에는 0.5를 적용하고 있습니다. ["Autograd"](../chapter_prerequisite/autograd.md) 절에서 정의한 `is_training` 을 사용하면, 학습할 때만 dropout 이 적용될 수 있게 할 수 있습니다.
 
 ```{.python .input}
 drop_prob1, drop_prob2 = 0.2, 0.5
@@ -148,6 +160,8 @@ def net(X):
 
 ### Training and Testing
 
+## 학습 및 테스트
+
 This is similar to the training and testing of multilayer perceptrons described previously.
 
 Multilayer perceptron의 학습과 테스트는 이전에 설명한 것과 비슷합니다.
@@ -162,9 +176,11 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size,
 
 ## Concise Implementation
 
+## 간결한 구현
+
 In Gluon, we only need to add the `Dropout` layer after the fully connected layer and specify the dropout probability. When training the model, the `Dropout` layer will randomly drop out the output elements of the previous layer at the specified dropout probability; the `Dropout` layer simply passes the data through during testing.
 
-Gluon을 이용하면, fully connected 래이어 다음에 dropout 확률값을 주면서 `Dropout` 래이어를 추가하기만 하면 됩니다. 모델을 학습시킬 때 `Dropout` 래이어는 명시된 dropout 확률에 따라서 결과 원소들을 임의로 누락시켜주고, 테스트를 수행할 때는 데이터를 그냥 통과 시킵니다.
+Gluon을 이용하면, fully connected 레이어 다음에 dropout 확률값을 주면서 `Dropout` 레이어를 추가하기만 하면 됩니다. 모델을 학습시킬 때 `Dropout` 레이어는 명시된 dropout 확률에 따라서 결과 원소들을 임의로 누락시켜주고, 테스트를 수행할 때는 데이터를 그냥 통과 시킵니다.
 
 ```{.python .input}
 net = nn.Sequential()
@@ -190,6 +206,8 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size, None,
 
 ## Summary
 
+## 요약
+
 * Beyond controlling the number of dimensions and the size of the weight vector, dropout is yet another tool to avoid overfitting. Often all three are used jointly.
 * Dropout replaces an activation $h$ with a random variable $h'$ with expected value $h$ and with variance given by the dropout probability $p$.
 * Dropout is only used during training.
@@ -197,8 +215,9 @@ d2l.train_ch3(net, train_iter, test_iter, loss, num_epochs, batch_size, None,
 * Dropout은  $h$ 를 같은 기대값  $h$ 를 갖는 랜덤 변수 $h'$ 로 dropout 확률 $p$ 만큼 바꾸는 것입니다.
 * Dropout은 학습에만 적용합니다.
 
-
 ## Problems
+
+## 문제
 
 1. Try out what happens if you change the dropout probabilities for layers 1 and 2. In particular, what happens if you switch the ones for both layers?
 1. Increase the number of epochs and compare the results obtained when using dropout with those when not using it.

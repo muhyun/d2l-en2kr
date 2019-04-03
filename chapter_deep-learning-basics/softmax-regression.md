@@ -32,27 +32,31 @@ When we're interested in either assigning datapoints to categories
 or assessing the *probability* that a category applies,
 we call this task *classification*. The issue with the models that we studied so far is that they cannot be applied to problems of probability estimation.
 
-카테고리별로 값을 할당한다든지, 어떤 카테고리에 속할 확률이 얼마나 되는지를 예측하는 것은 분류(classification) 라고 부릅니다. 앞 절들에서 살펴본 모델은 확률을 예측하는 문제에 적용하기 어렵습니다.
+카테고리별로 값을 할당하거나, 어떤 카테고리에 속할 확률이 얼마나 되는지를 예측하는 것은 분류(classification) 라고 부릅니다. 앞 절들에서 살펴본 모델은 확률을 예측하는 문제에 적용하기 어렵습니다.
 
 ## Classification Problems
 
-Let's start with an admittedly somewhat contrived image problem where the input image has a height and width of 2 pixels and the color is grayscale. Thus, each pixel value can be represented by a scalar. We record the four pixels in the image as $x_1, x_2, x_3, x_4$. We assume that the actual labels of the images in the training data set are "cat", "chicken" or "dog" (assuming that the three animals can be represented by 4 pixels).
+## 분류 문제들
+
+Let's start with an admittedly somewhat contrived image problem where the input image has a height and width of 2 pixels and the color is grayscale. Thus, each pixel value can be represented by a scalar. We record the four pixels in the image as $x_1, x_2, x_3, x_4​$. We assume that the actual labels of the images in the training data set are "cat", "chicken" or "dog" (assuming that the three animals can be represented by 4 pixels).
 
 입력 이미지의 높이와 넓이가 2 픽셀이고, 색은 회색인 이미지를 입력으로 다루는 간단한 문제부터 시작해보겠습니다. 이미지의 4개 픽셀의 값은  $x_1, x_2, x_3, x_4$ 으로 표현하고, 각 이미지의 실제 label는 "고양이", "닭", "강아지" 중에 하나로 정의되어 있다고 하겠습니다. (4 픽셀로 구성된 이미지가 3개 동물 중에 어떤 것인지를 구별할 수 있다고 가정합니다.)
 
 To represent these labels we have two choices. Either we set $y \in \{1, 2, 3\}$, where the integers represent {dog, cat, chicken} respectively. This is a great way of *storing* such information on a computer. It would also lend itself rather neatly to regression, but the ordering of outcomes imposes some quite unnatural ordering. In our toy case, this would presume that cats are more similar to chickens than to dogs, at least mathematically. It doesn't work so well in practice either, which is why statisticians invented an alternative approach: one hot encoding via
 
-이 label들을 표현하는데 두가지 방법이 있습니다. 첫번째 방법은  {강아지, 고양이, 닭}을 각각  $y \in \{1, 2, 3\}$ 으로 정의합니다. 이 방법은 컴퓨터에 정보를 저장하는 좋은 방법이지만, 이 방법은 회귀 문제에 적합합니다. 더구나 이 숫자들의 순서가 분류의 문제에서는 의미가 없습니다. 우리의 간단한 예제에서는 적어도 수학적으로는 고양이가 강아지보다는 닭과 더 비슷하다는 것을 의미할 수도 있게됩니다. 하지만, 실제 문제들에서 이런 비교가 잘되지 않습니다. 그렇기 때문에, 통계학자들은 one hot encoding 을 통해서 표현하는 방법을 만들었습니다.
+이 label들을 표현하는데 두가지 방법이 있습니다. 첫번째 방법은  {강아지, 고양이, 닭}을 각각  $y \in \{1, 2, 3\}$ 으로 정의합니다. 이 방법은 컴퓨터에 정보를 저장하는 좋은 방법이지만, 이 방법은 회귀 문제에 적합합니다. 더구나 이 숫자들의 순서가 분류의 문제에서는 의미가 없습니다. 우리의 간단한 예제에서는 적어도 수학적으로는 고양이가 강아지보다는 닭과 더 비슷하다는 것을 의미할 수도 있게 됩니다. 하지만, 실제 문제들에서 이런 비교가 잘되지 않습니다. 그렇기 때문에, 통계학자들은 one hot encoding 을 통해서 표현하는 방법을 만들었습니다.
 
 $$y \in \{(1, 0, 0), (0, 1, 0), (0, 0, 1)\}$$
 
 That is, $y$ is viewed as a three-dimensional vector, where $(1,0,0)$ corresponds to "cat", $(0,1,0)$ to "chicken" and $(0,0,1)$ to "dog".
 
-즉, $y$ 는 3차원 백터로 (1,0,0)은 고양이를, (0,1,0)은 닭은, (0,0,1)은 강아지를 의미합니다.
+즉, $y​$ 는 3차원 벡터로 (1,0,0)은 고양이를, (0,1,0)은 닭은, (0,0,1)은 강아지를 의미합니다.
 
 ### Network Architecture
 
-If we want to estimate multiple classes, we need multiple outputs, matching the number of categories. This is one of the main differences to regression. Because there are 4 features and 3 output animal categories, the weight contains 12 scalars ($w$ with subscripts) and the bias contains 3 scalars ($b$ with subscripts). We compute these three outputs, $o_1, o_2$, and $o_3$, for each input:
+## 네트워크 아키텍처
+
+If we want to estimate multiple classes, we need multiple outputs, matching the number of categories. This is one of the main differences to regression. Because there are 4 features and 3 output animal categories, the weight contains 12 scalars ($w​$ with subscripts) and the bias contains 3 scalars ($b​$ with subscripts). We compute these three outputs, $o_1, o_2​$, and $o_3​$, for each input:
 
 여러 클래스들에 대한 분류를 예측할 때는 카테고리 개수와 같은 수의 output들이 필요합니다. 이점이 회귀 문제와 가장 다른 점입니다. 4개 feature들과 3개의 동물 카테고리 output들이 있으니, weight($w$)는 12개의 scalar들로 구성되고 bias ($b$)는 3개의 scalar로 정의됩니다. 각 입력에 대해서 3개의 output ($o1, o2, o3$)는 다음과 같이 계산됩니다.
 $$
@@ -65,20 +69,21 @@ $$
 
 The neural network diagram below depicts the calculation above.  Like linear regression, softmax regression is also a single-layer neural network.  Since the calculation of each output, $o_1, o_2$, and $o_3$, depends on all inputs, $x_1$, $x_2$, $x_3$, and $x_4$, the output layer of the softmax regression is also a fully connected layer.
 
-아래 neural network 다이어그램은 위 연산을 표현하고 있습니다. 선형 회귀처럼, softmax regression은 단일 계층의 뉴럴 네트워크로 구성됩니다. output ($o1, o2, o3$) 는 모든 input ($x1, x2, x3, x4$) 값들과 연관되서 계산되기 때문에, softmax regression은 output 래이어는 fully connected 래이어입니다.
+아래 neural network 다이어그램은 위 연산을 표현하고 있습니다. 선형 회귀처럼, softmax regression은 단일 계층의 뉴럴 네트워크로 구성됩니다. output ($o1, o2, o3​$) 는 모든 input ($x1, x2, x3, x4​$) 값들과 연관되서 계산되기 때문에, softmax regression은 output 레이어는 fully connected 레이어입니다.
 
 ![Softmax regression is a single-layer neural network.  ](../img/softmaxreg.svg)
 
-
 ### Softmax Operation
 
-The chosen notation is somewhat verbose. In vector form we arrive at $\mathbf{o} = \mathbf{W} \mathbf{x} + \mathbf{b}$, which is much more compact to write and code. Since the classification problem requires discrete prediction output, we can use a simple approach to treat the output value $o_i$ as the confidence level of the prediction category $i$. We can choose the class with the largest output value as the predicted output, which is output $\operatorname*{argmax}_i o_i$. For example, if $o_1$, $o_2$, and $o_3$ are 0.1, 10, and 0.1, respectively, then the prediction category is 2, which represents "chicken".
+## Softmax 연산
 
-위 표기법은 다소 장황해보입니다. 이를 백터 표현으로 하면  $\mathbf{o} = \mathbf{W} \mathbf{x} + \mathbf{b}$ 와 같이 쓰기도 간단하고 코딩하기도 간단합니다. 하지만, 분류 문제는 discrete 예측 결과가 필요하기 때문에, $i$ 번째 카테고리에 대한 confidence 레벨을 표현하기 위해서 output 을 $o_i$ 로 표현하는 간단한 방법을 사용합니다. 이렇게 구성하면, 어떤 카테고리에 속하는지를 결과 값들 중에 가장 큰 값의 클래스로 선택하면 되고,  $\operatorname*{argmax}_i o_i$ 로 간단히 계산할 수 있습니다. 예를 들면, 결과 $o1, o2, o3$ 가 각 각 0.1, 10, 0.1 이라면, 예측된 카테고리는 2, 즉 "닭"이 됩니다.
+The chosen notation is somewhat verbose. In vector form we arrive at $\mathbf{o} = \mathbf{W} \mathbf{x} + \mathbf{b}​$, which is much more compact to write and code. Since the classification problem requires discrete prediction output, we can use a simple approach to treat the output value $o_i​$ as the confidence level of the prediction category $i​$. We can choose the class with the largest output value as the predicted output, which is output $\operatorname*{argmax}_i o_i​$. For example, if $o_1​$, $o_2​$, and $o_3​$ are 0.1, 10, and 0.1, respectively, then the prediction category is 2, which represents "chicken".
+
+위 표기법은 다소 장황해 보입니다. 이를 벡터 표현으로 하면  $\mathbf{o} = \mathbf{W} \mathbf{x} + \mathbf{b}​$ 와 같이 쓰기도 간단하고 코딩하기도 간단합니다. 하지만, 분류 문제는 discrete 예측 결과가 필요하기 때문에, $i​$ 번째 카테고리에 대한 confidence 레벨을 표현하기 위해서 output 을 $o_i​$ 로 표현하는 간단한 방법을 사용합니다. 이렇게 구성하면, 어떤 카테고리에 속하는지를 결과 값들 중에 가장 큰 값의 클래스로 선택하면 되고,  $\operatorname*{argmax}_i o_i​$ 로 간단히 계산할 수 있습니다. 예를 들면, 결과 $o1, o2, o3​$ 가 각 각 0.1, 10, 0.1 이라면, 예측된 카테고리는 2, 즉 "닭"이 됩니다.
 
 However, there are two problems with using the output from the output layer directly. On the one hand, because the range of output values from the output layer is uncertain, it is difficult for us to visually judge the meaning of these values. For instance, the output value 10 from the previous example indicates a level of "very confident" that the image category is "chicken". That is because its output value is 100 times that of the other two categories.  However, if $o_1=o_3=10^3$, then an output value of 10 means that the chance for the image category to be chicken is very low.  On the other hand, since the actual label has discrete values, the error between these discrete values and the output values from an uncertain range is difficult to measure.
 
-하지만, output 래이어의 값을 직접 사용하기에는 두 가지 문제가 있습니다. 첫번째는 output 값의 범위가 불확실해서, 시각적으로 이 값들의 의미를 판단하기 어렵다는 것입니다. 예를 들어, 이전 예에서 결과 10은 주어진 이미지가 "닭" 카테고리에 속할 것이라고 "매우 확신"한다는 것을 의미합니다. 왜냐하면, 다른 두 카테고리들의 값보다 100배 크기 때문입니다. 만약에 $o_1=o_3=10^3$ 이라면, 10이라는 output 값은 이미지가 "닭" 카테고리에 속할 가능성이 매우 낮다는 것의 의미하게 됩니다. 두번째 문제는 실제 label은 discrete 값을 갖기 때문에, 불특정 범위을 갖는 output 값과 label 값의 오류를 측정하는 것이 매우 어렵다는 것입니다.
+하지만, output 레이어의 값을 직접 사용하기에는 두 가지 문제가 있습니다. 첫번째는 output 값의 범위가 불확실해서, 시각적으로 이 값들의 의미를 판단하기 어렵다는 것입니다. 예를 들어, 이전 예에서 결과 10은 주어진 이미지가 "닭" 카테고리에 속할 것이라고 "매우 확신"한다는 것을 의미합니다. 왜냐하면, 다른 두 카테고리들의 값보다 100배 크기 때문입니다. 만약에 $o_1=o_3=10^3$ 이라면, 10이라는 output 값은 이미지가 "닭" 카테고리에 속할 가능성이 매우 낮다는 것의 의미하게 됩니다. 두번째 문제는 실제 label은 discrete 값을 갖기 때문에, 불특정 범위를 갖는 output 값과 label 값의 오류를 측정하는 것이 매우 어렵다는 것입니다.
 
 We could try forcing the outputs to correspond to probabilities, but there's no guarantee that on new (unseen) data the probabilities would be nonnegative, let alone sum up to 1. For this kind of discrete value prediction problem, statisticians have invented classification models such as (softmax) logistic regression. Unlike linear regression, the output of softmax regression is subjected to a nonlinearity which ensures that the sum over all outcomes always adds up to 1 and that none of the terms is ever negative. The nonlinear transformation works as follows:
 
@@ -97,14 +102,15 @@ $$
 
 So, the softmax operation does not change the prediction category output but rather it gives the outputs $\mathbf{o}$ proper meaning. Summarizing it all in vector notation we get ${\mathbf{o}}^{(i)} = \mathbf{W} {\mathbf{x}}^{(i)} + {\mathbf{b}}$ where ${\hat{\mathbf{y}}}^{(i)} = \mathrm{softmax}({\mathbf{o}}^{(i)})$.
 
-즉, softmax 연산은 예측하는 카테고리의 결과를 바꾸지 않으면서, 결과 $o$ 에 대한 적절한 의미를 부여해줍니다. 이것을 백터 표현법으로 요약해보면, get ${\mathbf{o}}^{(i)} = \mathbf{W} {\mathbf{x}}^{(i)} + {\mathbf{b}}$,  ${\hat{\mathbf{y}}}^{(i)} = \mathrm{softmax}({\mathbf{o}}^{(i)})$ 이 됩니다.
-
+즉, softmax 연산은 예측하는 카테고리의 결과를 바꾸지 않으면서, 결과 $o$ 에 대한 적절한 의미를 부여해줍니다. 이것을 벡터 표현법으로 요약해보면, get ${\mathbf{o}}^{(i)} = \mathbf{W} {\mathbf{x}}^{(i)} + {\mathbf{b}}$,  ${\hat{\mathbf{y}}}^{(i)} = \mathrm{softmax}({\mathbf{o}}^{(i)})$ 이 됩니다.
 
 ### Vectorization for Minibatches
 
+## 미니배치를 위한 벡터화
+
 To improve computational efficiency further, we usually carry out vector calculations for mini-batches of data. Assume that we are given a mini-batch $\mathbf{X}$ of examples with dimensionality $d$ and batch size $n$. Moreover, assume that we have $q$ categories (outputs). Then the minibatch features $\mathbf{X}$ are in $\mathbb{R}^{n \times d}$, weights $\mathbf{W} \in \mathbb{R}^{d \times q}$ and the bias satisfies $\mathbf{b} \in \mathbb{R}^q$.
 
-연산 효율을 더 높이기 위해서, 데이터의 미니 배치에 대한 연산을 백터화합니다. 차원이 $d$ 이고 배치 크기가 $n$ 인 데이터들의 미니 배치  $\mathbf{X}$ 가 있고, 결과로 $q$ 개의 카테고리가 있다고 가정하겠습니다. 그러면, 미니 배치 feature  $\mathbf{X}$ 는  $\mathbb{R}^{n \times d}$ 에 속하고, weight들 $\mathbf{W}$ 는 $\mathbb{R}^{d \times q}$ 에, bias  $\mathbf{b}$ 는 $\mathbb{R}^q$ 에 속합니다.
+연산 효율을 더 높이기 위해서, 데이터의 미니 배치에 대한 연산을 벡터화합니다. 차원이 $d$ 이고 배치 크기가 $n$ 인 데이터들의 미니 배치  $\mathbf{X}$ 가 있고, 결과로 $q$ 개의 카테고리가 있다고 가정하겠습니다. 그러면, 미니 배치 feature  $\mathbf{X}$ 는  $\mathbb{R}^{n \times d}$ 에 속하고, weight들 $\mathbf{W}$ 는 $\mathbb{R}^{d \times q}$ 에, bias  $\mathbf{b}$ 는 $\mathbb{R}^q$ 에 속합니다.
 $$
 \begin{aligned}
 \mathbf{O} &= \mathbf{X} \mathbf{W} + \mathbf{b} \\
@@ -114,9 +120,11 @@ $$
 
 This accelerates the dominant operation: $\mathbf{W} \mathbf{X}$ from a matrix-vector to a matrix-matrix product. The softmax itself can be computed by exponentiating all entries in $\mathbf{O}$ and then normalizing them by the sum appropriately.
 
-이렇게 정의하면 가장 많이 차지하는 연산을 가속화할 수 있습니다. 즉, : $\mathbf{W} \mathbf{X}$ 이 형렬-백터의 곱에서 행렬-행렬의 곱으로 변환됩니다. softmax는 결과  $\mathbf{O}$ 의 모든 항목에 지수 함수를 적용하고, 지수 함수들의 값의 합으로 normalize 하는 것으로 계산됩니다.
+이렇게 정의하면 가장 많이 차지하는 연산을 가속화할 수 있습니다. 즉, : $\mathbf{W} \mathbf{X}$ 이 형렬-벡터의 곱에서 행렬-행렬의 곱으로 변환됩니다. softmax는 결과  $\mathbf{O}$ 의 모든 항목에 지수 함수를 적용하고, 지수 함수들의 값의 합으로 normalize 하는 것으로 계산됩니다.
 
 ## Loss Function
+
+## Loss 함수
 
 Now that we have some mechanism for outputting probabilities, we need to transform this into a measure of how accurate things are, i.e. we need a *loss function*. For this we use the same concept that we already encountered in linear regression, namely likelihood maximization.
 
@@ -126,7 +134,7 @@ Now that we have some mechanism for outputting probabilities, we need to transfo
 
 The softmax function maps $\mathbf{o}$ into a vector of probabilities corresponding to various outcomes, such as $p(y=\mathrm{cat}|\mathbf{x})$. This allows us to compare the estimates with reality, simply by checking how well it predicted what we observe.
 
-softmax 함수는 결과  $\mathbf{o}$ 를 여러 결과들에 대한 확률, $p(y=\mathrm{cat}|\mathbf{x})$, 들의 백터로 변환합니다. 이는, 예측된 값이 얼마나 잘 예측하고 있는지를 확인하는 것으로 실제 값과 예측 결과에 대한 비교를 할 수 있습니다.
+softmax 함수는 결과  $\mathbf{o}$ 를 여러 결과들에 대한 확률, $p(y=\mathrm{cat}|\mathbf{x})$, 들의 벡터로 변환합니다. 이는, 예측된 값이 얼마나 잘 예측하고 있는지를 확인하는 것으로 실제 값과 예측 결과에 대한 비교를 할 수 있습니다.
 $$
 p(Y|X) = \prod_{i=1}^n p(y^{(i)}|x^{(i)})
 \text{ and thus }
@@ -142,9 +150,11 @@ $$
 
 Here we used that by construction $\hat{y} = \mathrm{softmax}(\mathbf{o})$ and moreover, that the vector $\mathbf{y}$ consists of all zeroes but for the correct label, such as $(1, 0, 0)$. Hence the the sum over all coordinates $j$ vanishes for all but one term. Since all $\hat{y}_j$ are probabilities, their logarithm is never larger than $0$. Consequently, the loss function is minimized if we correctly predict $y$ with *certainty*, i.e. if $p(y|x) = 1$ for the correct label.
 
-여기서  $\hat{y} = \mathrm{softmax}(\mathbf{o})$ 이고, 백터 $\mathbf{y}$ 는 해당하는 label이 아닌 위치에는 모두 0을 갖습니다. (예를 들면 (1,0,0)). 따라서, 모든 $j$ 에 대한 합을 하면, 하나의 항목만 남게됩니다. 모든 $\hat{y}_j$ 는 확률값이기 때문에, 이에 대한 logarithm 값은 0보다 커질 수 없습니다. 그 결과, 주어진 x에 대해서 y를 잘 예측하는 경우라면 (즉,  $p(y|x) = 1$), loss 함수는 최소화될 것입니다.
+여기서  $\hat{y} = \mathrm{softmax}(\mathbf{o})$ 이고, 벡터 $\mathbf{y}$ 는 해당하는 label이 아닌 위치에는 모두 0을 갖습니다. (예를 들면 (1,0,0)). 따라서, 모든 $j$ 에 대한 합을 하면, 하나의 항목만 남게 됩니다. 모든 $\hat{y}_j$ 는 확률값이기 때문에, 이에 대한 logarithm 값은 0보다 커질 수 없습니다. 그 결과, 주어진 x에 대해서 y를 잘 예측하는 경우라면 (즉,  $p(y|x) = 1$), loss 함수는 최소화될 것입니다.
 
 ### Softmax and Derivatives
+
+## Softmax와 미분(derivative)
 
 Since the Softmax and the corresponding loss are so common, it is worth while understanding a bit better how it is computed. Plugging $o$ into the definition of the loss $l$ and using the definition of the softmax we obtain:
 
@@ -169,7 +179,7 @@ In other words, the gradient is the difference between what the model thinks sho
 
 Now consider the case where we don't just observe a single outcome but maybe, an entire distribution over outcomes. We can use the same representation as before for $y$. The only difference is that rather than a vector containing only binary entries, say $(0, 0, 1)$, we now have a generic probability vector, say $(0.1, 0.2, 0.7)$. The math that we used previously to define the loss $l$ still works out fine, just that the interpretation is slightly more general. It is the expected value of the loss for a distribution over labels.
 
-자 이제는 하나의 결과에 대한 관찰을 하는 경우가 아니라, 결과들에 대한 전체 분포를 다루는 경우를 생각해봅시다.  $y$ 에 대한 표기를 이전과 동일하게 사용할 수 있습니다. 오직 다른 점은 (0,0,1) 과 같이 binary 값을 갖는 것이 아니라 (0.1, 0.2, 0.7)과 같이 일반적인 확률 백터를 사용한다는 것입니다. loss $l$ 의 정의도 동일한 수학을 사용하지만, 이에 대한 해석은 조금 더 일반적입니다. label들의 분포에 대한 loss의 기대값을 의미합니다.
+자 이제는 하나의 결과에 대한 관찰을 하는 경우가 아니라, 결과들에 대한 전체 분포를 다루는 경우를 생각해봅시다.  $y$ 에 대한 표기를 이전과 동일하게 사용할 수 있습니다. 오직 다른 점은 (0,0,1) 과 같이 binary 값을 갖는 것이 아니라 (0.1, 0.2, 0.7)과 같이 일반적인 확률 벡터를 사용한다는 것입니다. loss $l$ 의 정의도 동일한 수학을 사용하지만, 이에 대한 해석은 조금 더 일반적입니다. label들의 분포에 대한 loss의 기대값을 의미합니다.
 $$
 l(\mathbf{y}, \hat{\mathbf{y}}) = - \sum_j y_j \log \hat{y}_j
 $$
@@ -180,22 +190,24 @@ This loss is called the cross-entropy loss. It is one of the most commonly used 
 
 ## Information Theory Basics
 
+## 정보 이론(Information theory) 기초
+
 Information theory deals with the problem of encoding, decoding, transmitting and manipulating information (aka data), preferentially in as concise form as possible.
 
 Information theory는 정보 (또는 데이터)를 가능한 한 간결한 형식으로 인코딩, 디코딩, 전송, 및 변조하는 문제를 다룹니다.
 
-### Entropy
+### 엔트로피(Entropy)
 
 A key concept is how many bits of information (or randomness) are contained in data. It can be measured as the [entropy](https://en.wikipedia.org/wiki/Entropy) of a distribution $p$ via
 
-데이터 (또는 난수)에 몇개의 정보 비트들이 담겨있는지가 중요한 개념입니다. 이는 분표 $p$ 의 [entropy](https://en.wikipedia.org/wiki/Entropy)로 다음과 같이 수치화할 수 있습니다.
+데이터 (또는 난수)에 몇개의 정보 비트들이 담겨있는지가 중요한 개념입니다. 이는 분표 $p​$ 의 [entropy](https://en.wikipedia.org/wiki/Entropy)로 다음과 같이 수치화할 수 있습니다.
 $$
 H[p] = \sum_j - p(j) \log p(j)
 $$
 
 One of the fundamental theorems of information theory states that in order to encode data drawn randomly from the distribution $p$ we need at least $H[p]$ 'nats' to encode it. If you wonder what a 'nat' is, it is the equivalent of bit but when using a code with base $e$ rather than one with base 2. One nat is $\frac{1}{\log(2)} \approx 1.44$ bit. $H[p] / 2$ is often also called the binary entropy.
 
-정보 이론의 근본적인 이론중에 하나로 분포 $p$ 로부터 임의로 추출된 데이터를 인코드하기 위해서는 최소  $H[p]$ 개의 'nat'이 필요하다는 것이 있습니다. 여기서 'nat'은 비트와 동일하나, base 2가 아니라 base $e$ 를 이용합니다. 즉, 1 nat은 $\frac{1}{\log(2)} \approx 1.44$  비트이고,  $H[p] / 2$ 는 종종 binary entropy라고 불립니다.
+정보 이론의 근본적인 이론 중에 하나로 분포 $p$ 로부터 임의로 추출된 데이터를 인코드하기 위해서는 최소  $H[p]$ 개의 'nat'이 필요하다는 것이 있습니다. 여기서 'nat'은 비트와 동일하나, base 2가 아니라 base $e$ 를 이용합니다. 즉, 1 nat은 $\frac{1}{\log(2)} \approx 1.44$  비트이고,  $H[p] / 2$ 는 종종 binary entropy라고 불립니다.
 
 To make this all a bit more theoretical consider the following: $p(1) = \frac{1}{2}$ whereas $p(2) = p(3) = \frac{1}{4}$. In this case we can easily design an optimal code for data drawn from this distribution, by using `0` to encode 1, `10` for 2 and `11` for 3. The expected number of bit is $1.5 = 0.5 * 1 + 0.25 * 2 + 0.25 * 2$. It is easy to check that this is the same as the binary entropy $H[p] / \log 2$.
 
@@ -216,11 +228,15 @@ $q$ 에 대해서  $D(p\|q)$ 를 최소화하는 것은 cross-entropy loss를 �
 
 ## Model Prediction and Evaluation
 
+## 모델 예측 및 평가
+
 After training the softmax regression model, given any example features, we can predict the probability of each output category. Normally, we use the category with the highest predicted probability as the output category. The prediction is correct if it is consistent with the actual category (label). In the next part of the experiment, we will use accuracy to evaluate the model’s performance. This is equal to the ratio between the number of correct predictions and the total number of predictions.
 
 학습된 softmax regression 모델을 사용하면, 새로운  feature가 주어졌을 때, 각 output 카테고리에 속할 확률값을 예측할 수 있습니다. 일반적으로는 가장 크게 예측된 확률값을 갖는 카테고리를 결과 카테고리라고 정의합니다. 실제 카테고리 (label)와 일치하는 경우에 예측이 정확하다고 합니다. 다음에는 모델의 성능을 평가하는 방법으로 accuracy 정확도를 사용할 예정입니다. 이는 정확하게 예측한 개수와 전체 예측의 개수의 비율과 같습니다. 
 
 ## Summary
+
+## 요약
 
 * We introduced the softmax operation which takes a vector maps it into probabilities.
 * Softmax regression applies to classification problems. It uses the probability distribution of the output category in the softmax operation.
@@ -231,7 +247,9 @@ After training the softmax regression model, given any example features, we can 
 
 ## Problems
 
-1. Show that the Kullback-Leibler divergence $D(p\|q)$ is nonnegative for all distributions $p$ and $q$. Hint - use Jensen's inequality, i.e. use the fact that $-\log x$ is a convex function.
+## 문제
+
+1. Show that the Kullback-Leibler divergence $D(p\|q)​$ is nonnegative for all distributions $p​$ and $q​$. Hint - use Jensen's inequality, i.e. use the fact that $-\log x​$ is a convex function.
 1. Show that $\log \sum_j \exp(o_j)$ is a convex function in $o$.
 1. We can explore the connection between exponential families and the softmax in some more depth
     * Compute the second derivative of the cross entropy loss $l(y,\hat{y})$ for the softmax.

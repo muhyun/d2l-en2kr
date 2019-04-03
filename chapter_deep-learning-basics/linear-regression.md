@@ -1,12 +1,16 @@
 # Linear Regression
 
+# 선형 회귀(Linear Regression)
+
 To get our feet wet, we'll start off by looking at the problem of regression.
-This is the task of predicting a *real valued target* $y$ given a data point $x$.
+This is the task of predicting a *real valued target* $y​$ given a data point $x​$.
 Regression problems are extremely common in practice. For example, they are used for predicting continuous values, such as house prices, temperatures, sales, and so on. This is quite different from classification problems (which we study later), where the outputs are discrete (such as apple, banana, orange, etc. in image classification).
 
-우선 간단한 문제인 회귀 문제(regression)를 살펴보겠습니다. 회귀 문제는 주어진 데이터포인트 $x$에 해당하는 실제 값으로 주어지는 타겟 $y$를 예측하는 과제입니다. 회귀 문제는 현실에서 많이 보이는 문제입니다. 예를 들면, 주택 가격, 기온, 판매량 등과 같은 연속된 값을 예측하는 문제들을 들 수 있습니다. 이는 결과 값이 이미지 분류와 같이 과일의 종류를 예측하는 이산적인(descrete)인 구분 문제(classification)와는 다릅니다. 
+우선 간단한 문제인 회귀 문제(regression)를 살펴보겠습니다. 회귀 문제는 주어진 데이터포인트 $x$에 해당하는 실제 값으로 주어지는 타겟 $y$를 예측하는 과제입니다. 회귀 문제는 현실에서 많이 보이는 문제입니다. 예를 들면, 주택 가격, 기온, 판매량 등과 같은 연속된 값을 예측하는 문제들을 들 수 있습니다. 이는 결과 값이 이미지 분류와 같이 과일의 종류를 예측하는 이산적인(discrete)인 구분 문제(classification)와는 다릅니다. 
 
 ## Basic Elements of Linear Regression
+
+## 선형 회귀의 기본 요소들
 
 In linear regression, the simplest and still perhaps the most useful approach,
 we assume that prediction can be expressed as a *linear* combination of the input features
@@ -16,25 +20,27 @@ we assume that prediction can be expressed as a *linear* combination of the inpu
 
 ### Linear Model
 
+## 선형 모델
+
 For the sake of simplicity we will use the problem of estimating the price of a house (e.g. in dollars) based on area (e.g. in square feet) and age (e.g. in years) as our running example. In this case we could model
 
-간단한 예로, 집의 면적(제곱 미터)과 지어진지 몇년이 지났는지를 입력으로 사용해서 주택 가격을 예측하는 문제를 들어보겠습니다. 이 경우 모델을 다음과 같은 수식으로 표현할 수 있습니다.
+간단한 예로, 집의 면적(제곱 미터)과 지어진 후 몇년이 되었는지를 입력으로 사용해서 주택 가격을 예측하는 문제를 들어보겠습니다. 이 경우 모델을 다음과 같은 수식으로 표현할 수 있습니다.
 
 $$\mathrm{price} = w_{\mathrm{area}} \cdot \mathrm{area} + w_{\mathrm{age}} \cdot \mathrm{age} + b$$
 
 While this is quite illustrative, it becomes extremely tedious when dealing with more than two variables (even just naming them becomes a pain). This is what mathematicians have invented vectors for. In the case of $d$ variables we get
 
-이 공식은 명확해 보이는데, 두개 이상의 입력 변수가 사용되는 경우는 굉장히 긴 공식이 됩니다. (변수 이름을 지정하는 것조차 지루한 일입니다.) 하지만, 수학자들이 발명한 백터를 사용하면 간단하게 표현이 가능합니다.  $d$ 개의 변수가 있다고 하면, 모델은 아래와 같이 표현됩니다.
+이 공식은 명확해 보이는데, 두개 이상의 입력 변수가 사용되는 경우는 굉장히 긴 공식이 됩니다. (변수 이름을 지정하는 것조차 지루한 일입니다.) 하지만, 수학자들이 발명한 벡터를 사용하면 간단하게 표현이 가능합니다.  $d$ 개의 변수가 있다고 하면, 모델은 아래와 같이 표현됩니다.
 
 $$\hat{y} = w_1 \cdot x_1 + ... + w_d \cdot x_d + b$$
 
-Given a collection of data points $X$, and corresponding target values $\mathbf{y}$,
-we'll try to find the *weight* vector $w$ and bias term $b$
+Given a collection of data points $X​$, and corresponding target values $\mathbf{y}​$,
+we'll try to find the *weight* vector $w​$ and bias term $b​$
 (also called an *offset* or *intercept*)
-that approximately associate data points $x_i$ with their corresponding labels $y_i$.
-Using slightly more advanced math notation, we can express the long sum as $\hat{y} = \mathbf{w}^\top \mathbf{x} + b$. Finally, for a collection of data points $\mathbf{X}$ the predictions $\hat{\mathbf{y}}$ can be expressed via the matrix-vector product:
+that approximately associate data points $x_i​$ with their corresponding labels $y_i​$.
+Using slightly more advanced math notation, we can express the long sum as $\hat{y} = \mathbf{w}^\top \mathbf{x} + b​$. Finally, for a collection of data points $\mathbf{X}​$ the predictions $\hat{\mathbf{y}}​$ can be expressed via the matrix-vector product:
 
-데이터 포인트들을 $X$ 로, 타겟 변수는  $y$ 로 표현합니다. 각 데이터 포인트 $x_i$ 와 이에 대한 label 값인 $y_i$ 를 추정해서 연관시켜주는 $가중치(weight)$ 백터 $w$ 와 $bias$ $b$ 를 찾아보는 것을 시도해봅니다. 이를 조금 전문적인 수학 기호로 표현하면, 위 긴 합은 $\hat{y} = \mathbf{w}^\top \mathbf{x} + b$ 이 됩니다. 마지막으로, 데이터 포인드들의 집합 $X$ 와 예측 값 $\hat{\mathbf{y}}$ 은 아래와 같은 행렬-백터 곱의 공식이 됩니다.
+데이터 포인트들을 $X$ 로, 타겟 변수는  $y$ 로 표현합니다. 각 데이터 포인트 $x_i$ 와 이에 대한 label 값인 $y_i$ 를 추정해서 연관시켜주는 $가중치(weight)$ 벡터 $w$ 와 $bias$ $b$ 를 찾아보는 것을 시도해봅니다. 이를 조금 전문적인 수학 기호로 표현하면, 위 긴 합은 $\hat{y} = \mathbf{w}^\top \mathbf{x} + b$ 이 됩니다. 마지막으로, 데이터 포인드들의 집합 $X$ 와 예측 값 $\hat{\mathbf{y}}$ 은 아래와 같은 행렬-벡터 곱의 공식이 됩니다.
 
 $${\hat{\mathbf{y}}} = \mathbf{X} \mathbf{w} + b$$
 
@@ -44,19 +50,23 @@ $x$ 와 ​$y$ 의 관계가 대략 선형적이라고 가정하는 것은 상�
 
 ### Training Data
 
+## 학습 데이터
+
 The first thing that we need is data, such as the actual selling price of multiple houses as well as their corresponding area and age. We hope to find model parameters on this data to minimize the error between the predicted price and the real price of the model. In the terminology of machine learning, the data set is called a ‘training data’ or ‘training set’, a house (often a house and its price) is called a ‘sample’, and its actual selling price is called a ‘label’. The two factors used to predict the label are called ‘features’ or 'covariates'. Features are used to describe the characteristics of the sample.
 
 Typically we denote by $n$ the number of samples that we collect. Each sample (indexed as $i$) is described by $x^{(i)} = [x_1^{(i)}, x_2^{(i)}]$, and the label is $y^{(i)}$.
 
-우선 필요한 것은 데이터입니다. 예를 들면, 여러 집들의 실제 판매가격과 그 집들의 크기와 지어진지 몇년이 되었는지가 데이타가 필요합니다. 우리가 하고자 하는 것은 모델이 예측한 집 가격과 실제 가격의 차이(오류)를 최소화하는 모델 파라메터를 찾는 것입니다. 머신러닝의 용어로는, 데이터셋은 '학습 데이터' 또는 '학습 셋'이라고 하고, 하나의 집 (집과 판매가격)를 '샘플', 그리고 그 집의 판매가격는 '레이블(label)'이라고 합니다. 레이블을 예측하기 위해서 사용된 두 값는 '피처(feature)' 또는 '공변량(covariate)'이라고 합니다. 피처는 샘플의 특징을 표현하는데 사용됩니다.
+우선 필요한 것은 데이터입니다. 예를 들면, 여러 집들의 실제 판매가격과 그 집들의 크기와 지어진 후 몇년이 지났는지에 대한 데이타가 필요합니다. 우리가 하고자 하는 것은 모델이 예측한 집 가격과 실제 가격의 차이(오류)를 최소화하는 모델 파라메터를 찾는 것입니다. 머신러닝의 용어로는, 데이터셋은 '학습 데이터' 또는 '학습 셋'이라고 하고, 하나의 집 (집과 판매가격)를 '샘플', 그리고 그 집의 판매가격는 '레이블(label)'이라고 합니다. 레이블을 예측하기 위해서 사용된 두 값은 '피처(feature)' 또는 '공변량(covariate)'이라고 합니다. 피처는 샘플의 특징을 표현하는데 사용됩니다.
 
 일반적으로 수집한 샘플의 개수를 $n$ 으로 표기하고, 각 샘플은 인덱스 $i$ 를 사용해서 $x^{(i)} = [x_1^{(i)}, x_2^{(i)}]$ 와 레이블은  $y^{(i)}$ 로 표현합니다.
 
 ### Loss Function
 
+## Loss 함수
+
 In model training, we need to measure the error between the predicted value and the real value of the price. Usually, we will choose a non-negative number as the error. The smaller the value, the smaller the error. A common choice is the square function. The expression for evaluating the error of a sample with an index of $i$ is as follows:
 
-모델 학습을 위해서는 모델이 예측된 가격과 실제 가격의 오차를 측정해야합니다. 보통 오차는 0 또는 양수값을 선택하고, 값이 작을 수록, 오차가 적음을 의미합니다. 일반적으로 제곱 함수를 사용하며, index $i$ 의 샘플에 대한 오차 계산은 다음과 같이 합니다.
+모델 학습을 위해서는 모델이 예측된 가격과 실제 가격의 오차를 측정 해야합니다. 보통 오차는 0 또는 양수값을 선택하고, 값이 작을 수록, 오차가 적음을 의미합니다. 일반적으로 제곱 함수를 사용하며, index $i​$ 의 샘플에 대한 오차 계산은 다음과 같이 합니다.
 
 $$l^{(i)}(\mathbf{w}, b) = \frac{1}{2} \left(\hat{y}^{(i)} - y^{(i)}\right)^2,$$
 
@@ -82,8 +92,9 @@ In model training, we want to find a set of model parameters, represented by $\m
 
 $$\mathbf{w}^*, b^* = \operatorname*{argmin}_{\mathbf{w}, b}\  L(\mathbf{w}, b).$$
 
-
 ### Optimization Algorithm
+
+## 최적화 알고리즘
 
 When the model and loss function are in a relatively simple format, the solution to the aforementioned loss minimization problem can be expressed analytically in a closed form solution, involving matrix inversion. This is very elegant, it allows for a lot of nice mathematical analysis, *but* it is also very restrictive insofar as this approach only works for a small number of cases (e.g. multilayer perceptrons and nonlinear layers are no go). Most deep learning models do not possess such analytical solutions. The value of the loss function can only be reduced by a finite update of model parameters via an incremental optimization algorithm.
 
@@ -97,7 +108,7 @@ $$(\mathbf{w},b) \leftarrow (\mathbf{w},b) - \frac{\eta}{|\mathcal{B}|} \sum_{i 
 
 For quadratic losses and linear functions we can write this out explicitly as follows. Note that $\mathbf{w}$ and $\mathbf{x}$ are vectors. Here the more elegant vector notation makes the math much more readable than expressing things in terms of coefficients, say $w_1, w_2, \ldots w_d$.
 
-이차원 loss 및 선형 함수에 대해서는 아래와 같이 명시적으로 이를 계산할 수 있습니다. 여기서  $\mathbf{w}$ 와 $\mathbf{x}$ 는 백터입니다. 벡터를 잘 사용하면 $w_1, w_2, \ldots w_d$ 와 같은 계수를 읽기 쉬운 수식으로 표현할 수 있습니다.
+이차원 loss 및 선형 함수에 대해서는 아래와 같이 명시적으로 이를 계산할 수 있습니다. 여기서  $\mathbf{w}$ 와 $\mathbf{x}$ 는 벡터입니다. 벡터를 잘 사용하면 $w_1, w_2, \ldots w_d$ 와 같은 계수를 읽기 쉬운 수식으로 표현할 수 있습니다.
 $$
 \begin{aligned}
 \mathbf{w} &\leftarrow \mathbf{w} -   \frac{\eta}{|\mathcal{B}|} \sum_{i \in \mathcal{B}} \partial_{\mathbf{w}} l^{(i)}(\mathbf{w}, b) && =
@@ -113,6 +124,8 @@ In the above equation $|\mathcal{B}|$ represents the number of samples (batch si
 
 ### Model Prediction
 
+## 모델을 이용한 예측
+
 After model training has been completed, we then record the values of the model parameters $\mathbf{w}, b$ as $\hat{\mathbf{w}}, \hat{b}$. Note that we do not necessarily obtain the optimal solution of the loss function minimizer, $\mathbf{w}^*, b^*$ (or the true parameters), but instead we gain an approximation of the optimal solution. We can then use the learned linear regression model $\hat{\mathbf{w}}^\top x + \hat{b}$ to estimate the price of any house outside the training data set with area (square feet) as $x_1$ and house age (year) as $x_2$. Here, estimation also referred to as ‘model prediction’ or ‘model inference’.
 
 모델 학습이 끝나면 모델 파라메터  $\mathbf{w}, b$ 에 해당하는 값 $\hat{\mathbf{w}}와 \hat{b}$ 을 저장합니다. 학습을 통해서 loss 함수를 최소화 시키는 최적의 값 $\mathbf{w}^*, b^*$ 를 구할 필요는 없습니다. 다만, 이 최적의 값에 근접하는 값을 학습을 통해서 찾는 것입니다. 이 후, 학습된 선형 회귀 모델  $\hat{\mathbf{w}}^\top x + \hat{b}$ 을 이용해서 학습 데이터셋에 없는 집 정보에 대한 집 가격을 추정합니다. "추정"을 "모델 예측(prediction)" 또는 "모델 추론 (inference)" 라고 합니다.
@@ -121,14 +134,17 @@ Note that calling this step 'inference' is actually quite a misnomer, albeit one
 
 "추론(inference)"라는 용어는 실제로는 잘못 선택된 용어지만, 딥러닝에서는 많이 사용하는 용어로 자리잡았습니다. 통계에서 추론은 다른 데이터를 기반으로 파라메터들과 결과를 추정하는 것을 의미하기 때문에, 통계학자들과 이야기할 때 이 용어로 인해서 혼동을 가져오기도 합니다. 하지만, 이미 보편적으로 사용되고 있기 때문에, 학습된 모델에 새로운 데이터를 적용하는 것을 추론이라는 용어를 사용하겠습니다. (수백년을 걸친 통계학자들에게 미안함을 표합니다.)
 
-
 ## From Linear Regression to Deep Networks
+
+## 선형 회귀에서 딥 네트워크로
 
 So far we only talked about linear functions. Neural Networks cover a lot more than that. That said, linear functions are an important building block. Let's start by rewriting things in a 'layer' notation.
 
 지금까지 선형 함수만을 이야기했는데, 뉴럴 네트워크는 이 보다 많은 것을 다룹니다. 물론 선형 함수는 중요한 구성 요소입니다. 이제 모든 것을 '층(layer)' 표기법으로 다시 기술해 보겠습니다.
 
 ### Neural Network Diagram
+
+## 뉴럴 네트워크 다이어그램
 
 While in deep learning, we can represent model structures visually using neural network diagrams. To more clearly demonstrate the linear regression as the structure of neural network, Figure 3.1 uses a neural network diagram to represent the linear regression model presented in this section. The neural network diagram hides the weight and bias of the model parameter.
 
@@ -138,9 +154,11 @@ While in deep learning, we can represent model structures visually using neural 
 
 In the neural network shown above, the inputs are $x_1, x_2, \ldots x_d$. Sometimes the number of inputs is also referred to as feature dimension. In the above cases the number of inputs is $d$ and the number of outputs is $1$. It should be noted that we use the output directly as the output of linear regression.  Since the input layer does not involve any other nonlinearities or any further calculations, the number of layers is 1. Sometimes this setting is also referred to as a single neuron. Since all inputs are connected to all outputs (in this case it's just one), the layer is also referred to as a 'fully connected layer' or 'dense layer'.
 
-위 뉴럴 네트워크에서 입력값은  $x_1, x_2, \ldots x_d$ 입니다. 때로는 입력값의 개수를 피처 차원(feature dimension)이라고 부르기도 합니다. 이 경우에는 입력값의 개수는 $d$ 이고, 출력값의 개수는 1 입니다. 출력값을 선형 회귀의 결과를 직접 결과로 사용한다는 것을 기억해두세요. 입력 래이어에는 어떤 비선형이나 어떤 계산이 적용되지 않기 때문에, 이 네트워크의 총 래이어의 개수는 1개입니다. 종종 이런 네트워크를 단일 뉴론이라고 부르기도 합니다. 모든 입력들이 모든 출력(이 경우는 한개의 출력)과 연결되어 있기 때문에, 이 레이어는 fully connected layer 또는 dense layer라고 불립니다.
+위 뉴럴 네트워크에서 입력값은  $x_1, x_2, \ldots x_d$ 입니다. 때로는 입력값의 개수를 피처 차원(feature dimension)이라고 부르기도 합니다. 이 경우에는 입력값의 개수는 $d$ 이고, 출력값의 개수는 1 입니다. 출력값을 선형 회귀의 결과를 직접 결과로 사용한다는 것을 기억해두세요. 입력 레이어에는 어떤 비선형이나 어떤 계산이 적용되지 않기 때문에, 이 네트워크의 총 레이어의 개수는 1개입니다. 종종 이런 네트워크를 단일 뉴론이라고 부르기도 합니다. 모든 입력들이 모든 출력(이 경우는 한개의 출력)과 연결되어 있기 때문에, 이 레이어는 fully connected layer 또는 dense layer라고 불립니다.
 
 ### A Detour to Biology
+
+## 생물학으로 우회
 
 Neural networks quite clearly derive their name from Neuroscience. To understand a bit better how many network architectures were invented, it is worth while considering the basic structure of a neuron. For the purpose of the analogy it is sufficient to consider the *dendrites* (input terminals), the *nucleus* (CPU), the *axon* (output wire), and the *axon terminals* (output terminals) which connect to other neurons via *synapses*.
 
@@ -148,19 +166,21 @@ Neural networks quite clearly derive their name from Neuroscience. To understand
 
 ![The real neuron](../img/Neuron.svg)
 
-Information $x_i$ arriving from other neurons (or environmental sensors such as the retina) is received in the dendrites. In particular, that information is weighted by *synaptic weights* $w_i$ which determine how to respond to the inputs (e.g. activation or inhibition via $x_i w_i$). All this is aggregated in the nucleus $y = \sum_i x_i w_i + b$, and this information is then sent for further processing in the axon $y$, typically after some nonlinear processing via $\sigma(y)$. From there it either reaches its destination (e.g. a muscle) or is fed into another neuron via its dendrites.
+Information $x_i​$ arriving from other neurons (or environmental sensors such as the retina) is received in the dendrites. In particular, that information is weighted by *synaptic weights* $w_i​$ which determine how to respond to the inputs (e.g. activation or inhibition via $x_i w_i​$). All this is aggregated in the nucleus $y = \sum_i x_i w_i + b​$, and this information is then sent for further processing in the axon $y​$, typically after some nonlinear processing via $\sigma(y)​$. From there it either reaches its destination (e.g. a muscle) or is fed into another neuron via its dendrites.
 
-수상돌기는 다른 뉴론들로 부터 온 정보 $x_i$ 를 받습니다. 구체적으로는 그 정보는 시텝틱 가중치 $w_i$ 가 적용된 정보값입니다. 이 가중치는 입력에 얼마나 반응을 해야하는지 정의합니다. (즉, $x_i w_i$ 를 통해서 활성화 됨) 이 모든 값들은 핵에서 $y = \sum_i x_i w_i + b$,  로 통합되고, 이 정보는 축삭(axon)으로 보내져서 다른 프로세스를 거치는데, 일반적으로는 $\sigma(y)$ 를 통해서 비선형 처리가 됩니다. 이 후, 최종 목적지 (예를 들면 근육) 또는 수상돌기를 거처서 다른 뉴론으로 보내집니다.
+수상돌기는 다른 뉴론들로 부터 온 정보 $x_i$ 를 받습니다. 구체적으로는 그 정보는 시텝틱 가중치 $w_i$ 가 적용된 정보값입니다. 이 가중치는 입력에 얼마나 반응을 해야하는지 정의합니다. (즉, $x_i w_i$ 를 통해서 활성화 됨) 이 모든 값들은 핵에서 $y = \sum_i x_i w_i + b$,  로 통합되고, 이 정보는 축삭(axon)으로 보내져서 다른 프로세스를 거치는데, 일반적으로는 $\sigma(y)$ 를 통해서 비선형 처리가 됩니다. 이 후, 최종 목적지 (예를 들면 근육) 또는 수상돌기를 거쳐서 다른 뉴론으로 보내집니다.
 
 Brain *structures* can be quite varied. Some look rather arbitrary whereas others have a very regular structure. E.g. the visual system of many insects is quite regular. The analysis of such structures has often inspired neuroscientists to propose new architectures, and in some cases, this has been successful. Note, though, that it would be a fallacy to require a direct correspondence - just like airplanes are *inspired* by birds, they have many distinctions. Equal sources of inspiration were mathematics and computer science.
 
-뇌의 구조는 아주 다양합니다. 어떤 것들은 다소 임의적으로 보이지만, 어떤 것들은 아주 규칙적인 구조를 가지고 있습니다. 예를 들면, 여러 곤충들의 시각 시스템은 아주 구조적입니다. 이 구조들에 대한 분석을 통해서 신경과학자들은 새로운 아키텍처를 제안하는데 영감을 받기도 하고, 어떤 경우에는 아주 성공적이어 왔습니다. 하지만, 비행기가 새로 부터 영감을 받아서 만들어 졌지만 차이가 많은 것과 같이, 이 둘의 직접 관계를 찾아보는 것은 오류가 되기도 합니다. 수학과 컴퓨터 과학이 영감의 같은 근원이라고 볼 수 있습니다
+뇌의 구조는 아주 다양합니다. 어떤 것들은 다소 임의적으로 보이지만, 어떤 것들은 아주 규칙적인 구조를 가지고 있습니다. 예를 들면, 여러 곤충들의 시각 시스템은 아주 구조적입니다. 이 구조들에 대한 분석을 통해서 신경과학자들은 새로운 아키텍처를 제안하는데 영감을 받기도 하고, 어떤 경우에는 아주 성공적이어 왔습니다. 하지만, 비행기가 새로부터 영감을 받아서 만들어 졌지만 차이가 많은 것과 같이, 이 둘의 직접 관계를 찾아보는 것은 오류가 되기도 합니다. 수학과 컴퓨터 과학이 영감의 같은 근원이라고 볼 수 있습니다
 
 ### Vectorization for Speed
 
+## 벡터화로 속도 내기
+
 In model training or prediction, we often use vector calculations and process multiple observations at the same time. To illustrate why this matters, consider two methods of adding vectors. We begin by creating two 1000 dimensional ones first.
 
-모델 학습 및 예측을 수행할 때, 백터 연산을 사용하고 이를 통해서 여러 값들은 한번에 처리합니다. 이것이 왜 중요한지 설명하기위해서 백터들을 더하는 두 가지 방법을 생각해봅시다. 우선 1000 차원의 백터 두개를 생성합니다.
+모델 학습 및 예측을 수행할 때, 벡터 연산을 사용하고 이를 통해서 여러 값들은 한번에 처리합니다. 이것이 왜 중요한지 설명하기위해서 벡터들을 더하는 두 가지 방법을 생각해봅시다. 우선 1000 차원의 벡터 두개를 생성합니다.
 
 ```{.python .input  n=1}
 from mxnet import nd
@@ -172,7 +192,7 @@ b = nd.ones(shape=10000)
 
 One way to add vectors is to add them one coordinate at a time using a for loop.
 
-두 백터를 더하는 방법 중에 하나는 for loop을 이용해서 백터의 각 값들을 하나씩 더하는 것입니다.
+두 벡터를 더하는 방법 중에 하나는 for loop을 이용해서 벡터의 각 값들을 하나씩 더하는 것입니다.
 
 ```{.python .input  n=2}
 start = time()
@@ -184,7 +204,7 @@ time() - start
 
 Another way to add vectors is to add the vectors directly:
 
-다른 방법으로는 두 백터를 직접 더할 수 있습니다.
+다른 방법으로는 두 벡터를 직접 더할 수 있습니다.
 
 ```{.python .input  n=3}
 start = time()
@@ -194,9 +214,11 @@ time() - start
 
 Obviously, the latter is vastly faster than the former. Vectorizing code is a good way of getting order of magnitude speedups. Likewise, as we saw above, it also greatly simplifies the mathematics and with it, it reduces the potential for errors in the notation.
 
-당한하게도 백터를 직접 더하는 방법이 훨씬 더 빠릅니다. 코드를 백터화하는 것은 연산 속도를 빠르게 하는 좋은 방법입니다. 마찬가지로, 연산식을 간단하게 하고, 표기에 있어서 잠재적인 오류를 줄여주는 효과도 있습니다.
+당연하게도 벡터를 직접 더하는 방법이 훨씬 더 빠릅니다. 코드를 벡터화하는 것은 연산 속도를 빠르게 하는 좋은 방법입니다. 마찬가지로, 연산식을 간단하게 하고, 표기에 있어서 잠재적인 오류를 줄여주는 효과도 있습니다.
 
 ## The Normal Distribution and Squared Loss
+
+## 표준 분포와 제곱 Loss
 
 The following is optional and can be skipped but it will greatly help with understanding some of the design choices in building deep learning models. As we saw above, using the squared loss $l(y, \hat{y}) = \frac{1}{2} (y - \hat{y})^2$ has many nice properties, such as having a particularly simple derivative $\partial_{\hat{y}} l(y, \hat{y}) = (\hat{y} - y)$. That is, the gradient is given by the difference between estimate and observation. You might reasonably point out that linear regression is a [classical](https://en.wikipedia.org/wiki/Regression_analysis#History) statistical model. Legendre first developed the method of least squares regression in 1805, which was shortly thereafter rediscovered by Gauss in 1809. To understand this a bit better, recall the normal distribution with mean $\mu$ and variance $\sigma^2$.
 
@@ -232,7 +254,7 @@ plt.show()
 
 As can be seen in the figure above, changing the mean shifts the function, increasing the variance makes it more spread-out with a lower peak. The key assumption in linear regression with least mean squares loss is that the observations actually arise from noisy observations, where noise is added to the data, e.g. as part of the observations process.
 
-위 그림에서 보이듯이, 평균을 변경하면 함수를 이동시고, 편차를 증가시키면 피크는 낮추고 더 펼쳐지게 만듭니다. least mean sequre loss를 적용한 선형 회귀에서 중요한 가정은 관찰들은 노이즈가 있는 관찰에서 얻어지고, 이 노이즈들은 데이터에 더해진다는 것입니다.
+위 그림에서 보이듯이, 평균을 변경하면 함수를 이동시키고, 편차를 증가시키면 피크는 낮추고 더 펼쳐지게 만듭니다. least mean sequre loss를 적용한 선형 회귀에서 중요한 가정은 관찰들은 노이즈가 있는 관찰에서 얻어지고, 이 노이즈들은 데이터에 더해진다는 것입니다.
 
 $$y = \mathbf{w}^\top \mathbf{x} + b + \epsilon \text{ where } \epsilon \sim \mathcal{N}(0, \sigma^2)$$
 
@@ -260,16 +282,20 @@ A closer inspection reveals that for the purpose of minimizing $-\log P(Y|X)$ we
 
 ## Summary
 
+## 요약
+
 * Key ingredients in a machine learning model are training data, a loss function, an optimization algorithm, and quite obviously, the model itself.
 * Vectorizing makes everything better (mostly math) and faster (mostly code).
 * Minimizing an objective function and performing maximum likelihood can mean the same thing.
 * Linear models are neural networks, too.
 * 머신러닝에서 중요한 요소는 학습 데이터, loss 함수, 최적화 알고리즘, 그리고 당연하지만 모델 자체입니다.
-* 백터화는 모든 것(수학)을 좋게 만들고, (코드를) 빠르게 만들어 줍니다.
+* 벡터화는 모든 것(수학)을 좋게 만들고, (코드를) 빠르게 만들어 줍니다.
 * objective 함수를 최소화하는 것과 maximum likelihood 구하는 것은 같은 것입니다.
 * 선형 모델도 뉴럴 모델이다.
 
 ## Problems
+
+## 문제
 
 1. Assume that we have some data $x_1, \ldots x_n \in \mathbb{R}$. Our goal is to find a constant $b$ such that $\sum_i (x_i - b)^2$ is minimized.
     * Find the optimal closed form solution.
